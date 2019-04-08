@@ -19,6 +19,7 @@ public:
     void RemoveComponent(std::shared_ptr<Component> cpt);
     std::shared_ptr<Component> GetComponent(std::string type);
     Rect box;
+
 private:
     std::vector<std::shared_ptr<Component>> components;
     bool isDead;

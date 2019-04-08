@@ -12,6 +12,7 @@ public:
     void Update(float dt);
     void Render();
     bool Is(std::string type);
+
 private:
     int hitpoints;
 };
