@@ -1,6 +1,7 @@
 #include<string>
 #include "Sound.h"
 #include "GameObject.h"
+#include "Resources.h"
 
 Sound::Sound(GameObject& associated) : Component(associated) {
     this->chunk = nullptr;
@@ -9,16 +10,6 @@ Sound::Sound(GameObject& associated) : Component(associated) {
 
 Sound::Sound(GameObject& associated, std::string file) : Sound(associated) {
     this->Open(file);
-}
-
-Sound::~Sound() {
-    if(this->channel != -1) {
-        while(Mix_Playing(this->channel));
-    }
-    if(this->chunk != nullptr) {
-        this->Stop();
-        Mix_FreeChunk(chunk);
-    }
 }
 
 void Sound::Play(int times) {
@@ -35,7 +26,7 @@ void Sound::Stop() {
 }
 
 void Sound::Open(std::string file) {
-    this->chunk = Mix_LoadWAV(file.c_str());
+    this->chunk = Resources::GetSound(file.c_str());
 }
 
 bool Sound::IsOpen() {

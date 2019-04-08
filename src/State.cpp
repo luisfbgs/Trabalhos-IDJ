@@ -5,6 +5,8 @@
 #include "GameObject.h"
 #include "Face.h"
 #include "Common.h"
+#include "TileSet.h"
+#include "TileMap.h"
 
 State::State() {
     this->quitRequested = false;
@@ -15,11 +17,23 @@ State::State() {
     background->box.lefUp.y = 0;
     background->box.w = backgroundSprite->GetWidth();
     background->box.h = backgroundSprite->GetHeight();
-
+    
     background->AddComponent(backgroundSprite);
 
-    this->objectArray.emplace_back(background);
+    std::shared_ptr<GameObject> gameTile(new GameObject());   
+    std::shared_ptr<Sprite> tileSprite(new Sprite(*gameTile, "assets/img/tileset.png"));
+    gameTile->box.lefUp.x = 0;
+    gameTile->box.lefUp.y = 0;
+    gameTile->box.w = tileSprite->GetWidth();
+    gameTile->box.h = tileSprite->GetHeight();
 
+    this->tileSet = std::shared_ptr<TileSet>(new TileSet(64, 64, tileSprite));
+    std::shared_ptr<TileMap> tileMap(new TileMap(*gameTile, "assets/map/tileMap.txt", tileSet));
+
+    gameTile->AddComponent(tileMap);
+
+    this->objectArray.emplace_back(background);
+    this->objectArray.emplace_back(gameTile);
     music.Open("assets/audio/stageState.ogg");
     music.Play();
 }

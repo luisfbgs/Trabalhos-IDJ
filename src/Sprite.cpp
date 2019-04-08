@@ -2,6 +2,7 @@
 #include <assert.h>
 #include "Sprite.h"
 #include "Game.h"
+#include "Resources.h"
 #define INCLUDE_SDL_IMAGE
 #include "SDL_include.h"
 
@@ -14,17 +15,8 @@ Sprite::Sprite(GameObject& associated, const std::string &file) : Component(asso
     this->Open(file);
 }
 
-Sprite::~Sprite() {
-    if(this->texture != nullptr) {
-        SDL_DestroyTexture(this->texture);
-    }
-}
-
 void Sprite::Open(const std::string &file) {
-    if(this->IsOpen()) {
-        SDL_DestroyTexture(this->texture);
-    }
-    this->texture = IMG_LoadTexture(Game::GetInstance().GetRenderer(), file.c_str());
+    this->texture = Resources::GetImage(file.c_str());
     assert(this->texture != nullptr);
     SDL_QueryTexture(this->texture, nullptr, nullptr, &this->width, &this->height);
     this->SetClip(0, 0, this->width, this->height);

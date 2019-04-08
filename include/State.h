@@ -5,6 +5,7 @@
 #include "GameObject.h"
 #include "Sprite.h"
 #include "Music.h"
+#include "TileSet.h"
 
 class State{
 public:
@@ -21,6 +22,7 @@ private:
     std::vector<std::shared_ptr<GameObject>> objectArray;
     Music music;
     bool quitRequested;
+    std::shared_ptr<TileSet> tileSet;
 };
 
 #endif

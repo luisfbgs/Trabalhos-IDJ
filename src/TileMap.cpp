@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <string>
+#include <memory>
 #include "TileMap.h"
 #include "TileSet.h"
 #include "GameObject.h"
 
-TileMap::TileMap(GameObject& associated, std::string file, TileSet* tileSet) : Component(associated) {
+TileMap::TileMap(GameObject& associated, std::string file, std::shared_ptr<TileSet> tileSet) : Component(associated) {
     this->tileSet = tileSet;
     this->Load(file);
 }
@@ -23,7 +24,7 @@ void TileMap::Load(std::string file) {
     }
 }
 
-void TileMap::SetTileSet(TileSet* tileSet) {
+void TileMap::SetTileSet(std::shared_ptr<TileSet> tileSet) {
     this->tileSet = tileSet;
 }
 

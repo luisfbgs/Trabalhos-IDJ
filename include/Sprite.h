@@ -18,7 +18,6 @@ private:
 public:
     Sprite(GameObject& associated);
     Sprite(GameObject& associated, const std::string &file);
-    ~Sprite();
     void Open(const std::string &file);  
     void SetClip(int x, int y, int w, int h);
     void Render(float x, float y);

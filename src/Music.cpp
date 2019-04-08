@@ -1,6 +1,7 @@
-#include <Music.h>
+#include "Music.h"
+#include "Resources.h"
 #define INCLUDE_SDL_MIXER
-#include <SDL_include.h>
+#include "SDL_include.h"
 
 Music::Music() {
     this->music = nullptr;
@@ -14,7 +15,6 @@ Music::Music(std::string file) {
 Music::~Music() {
     if(this->IsOpen()) {
         this->Stop(0);
-        Mix_FreeMusic(music);
     }
 }
 
@@ -33,7 +33,7 @@ void Music::Open(std::string file) {
         this->Stop(0);
         Mix_FreeMusic(music);
     }
-    this->music = Mix_LoadMUS(file.c_str());
+    this->music = Resources::GetMusic(file.c_str());
 }
 
 bool Music::IsOpen() {
