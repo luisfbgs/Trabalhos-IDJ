@@ -1,10 +1,12 @@
 #define INCLUDE_SDL_IMAGE
 #define INCLUDE_SDL_MIXER
+
 #include <assert.h>
 #include <string>
 
 #define INCLUDE_SDL
 #include "SDL_include.h"
+#include "InputManager.h"
 #include "Game.h"
 #include "State.h"
 
@@ -53,10 +55,11 @@ SDL_Renderer* Game::GetRenderer() {
 
 void Game::Run() {
     
+    InputManager &input = InputManager::GetInstance();
     while(!this->state->QuitRequested()){
+        input.Update();
         this->state->Update(0.0f);
         this->state->Render();
         SDL_RenderPresent(this->renderer);
-        SDL_Delay(33);
     }
 }

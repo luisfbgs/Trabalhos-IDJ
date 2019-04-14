@@ -7,6 +7,7 @@
 #include "Common.h"
 #include "TileSet.h"
 #include "TileMap.h"
+#include "InputManager.h"
 
 State::State() {
     this->quitRequested = false;
@@ -51,10 +52,20 @@ void State::LoadAssets() {
 }
 
 void State::Update(float dt) {
-    this->Input();
+    InputManager &input = InputManager::GetInstance();
+    this->quitRequested = input.QuitRequested();
+
+    // Create a penguin face if space bar is pressed
+    if(input.KeyPress(' ')) {
+        int mouseX = input.GetMouseX(), mouseY = input.GetMouseY();
+        Vec2 objPos = Vec2(200, 0).Rotate(randReal(0.0f, 360.0f)) + Vec2(mouseX, mouseY);
+        this->AddObject((int)objPos.x, (int)objPos.y);
+    }
+
     for(std::shared_ptr<GameObject> object : this->objectArray) {
         object->Update(dt);
     }
+    
     for(int i = 0; i < (int)this->objectArray.size(); i++) {
         if(this->objectArray[i]->IsDead()) {
             this->objectArray.erase(this->objectArray.begin() + i);
@@ -67,44 +78,6 @@ void State::Render() {
     for(std::shared_ptr<GameObject> object : this->objectArray) {
         object->Render();
     }
-}
-
-void State::Input() {
-	SDL_Event event;
-	int mouseX, mouseY;
-
-	SDL_GetMouseState(&mouseX, &mouseY);
-
-	while(SDL_PollEvent(&event)) {
-
-		if(event.type == SDL_QUIT) {
-			quitRequested = true;
-		}
-		
-		if(event.type == SDL_MOUSEBUTTONDOWN) {
-
-			for(int i = this->objectArray.size() - 1; i >= 0; --i) {
-				GameObject* go = (GameObject*) this->objectArray[i].get();
-
-				if(go->box.Contains(mouseX, mouseY)) {
-					Face* face = (Face*)go->GetComponent("Face").get();
-					if(face != nullptr) {
-						face->Damage(randInt(10, 19));
-						break;
-					}
-				}
-			}
-		}
-		if(event.type == SDL_KEYDOWN) {
-			if(event.key.keysym.sym == SDLK_ESCAPE) {
-				this->quitRequested = true;
-			}
-			else {
-				Vec2 objPos = Vec2(200, 0).Rotate(randReal(0.0f, 360.0f)) + Vec2(mouseX, mouseY);
-				AddObject((int)objPos.x, (int)objPos.y);
-			}
-		}
-	}
 }
 
 void State::AddObject(int mouseX, int mouseY) {
