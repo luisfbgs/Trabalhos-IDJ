@@ -14,10 +14,11 @@ private:
     int width;
     int height;
     SDL_Rect clipRect;
+    bool shouldMove;
 
 public:
-    Sprite(GameObject& associated);
-    Sprite(GameObject& associated, const std::string &file);
+    Sprite(GameObject& associated, bool shouldMove = true);
+    Sprite(GameObject& associated, const std::string &file, bool shouldMove = true);
     void Open(const std::string &file);  
     void SetClip(int x, int y, int w, int h);
     void Render(float x, float y);

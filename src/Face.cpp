@@ -4,6 +4,7 @@
 #include "GameObject.h"
 #include "Sound.h"
 #include "Common.h"
+#include "Camera.h"
 #include "InputManager.h"
 
 Face::Face(GameObject& associated) : Component(associated) {
@@ -26,7 +27,7 @@ void Face::Update(int dt) {
     InputManager &input = InputManager::GetInstance();
     if(input.MousePress(LEFT_MOUSE_BUTTON)) {
         int mouseX = input.GetMouseX(), mouseY = input.GetMouseY();
-        if(this->associated.box.Contains(mouseX, mouseY)) {
+        if((this->associated.box + Camera::pos).Contains(mouseX, mouseY)) {
             this->Damage(randInt(10, 19));
         }
     }

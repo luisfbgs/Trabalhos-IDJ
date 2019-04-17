@@ -2,16 +2,20 @@
 #include <assert.h>
 #include "Sprite.h"
 #include "Game.h"
+#include "Camera.h"
+#include "Vec2.h"
 #include "Resources.h"
 #define INCLUDE_SDL_IMAGE
 #include "SDL_include.h"
 
-Sprite::Sprite(GameObject& associated) : Component(associated) {
+Sprite::Sprite(GameObject& associated, bool shouldMove) : Component(associated) {
     this->texture = nullptr;
+    this->shouldMove = shouldMove;
 }
 
-Sprite::Sprite(GameObject& associated, const std::string &file) : Component(associated) {
+Sprite::Sprite(GameObject& associated, const std::string &file, bool shouldMove) : Component(associated) {
     this->texture = nullptr;
+    this->shouldMove = shouldMove;
     this->Open(file);
 }
 
@@ -45,7 +49,11 @@ void Sprite::Render(float x, float y) {
 }
 
 void Sprite::Render() {
-    this->Render(this->associated.box.lefUp.x, this->associated.box.lefUp.y);
+    Vec2 renderPos = this->associated.box.lefUp;
+    if(this->shouldMove) {
+        renderPos = renderPos + Camera::pos;
+    }
+    this->Render(renderPos.x, renderPos.y);
 }
 
 void Sprite::Update(int dt) {
