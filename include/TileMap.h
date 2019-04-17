@@ -18,7 +18,7 @@ public:
     int GetWidth();
     int GetHeight();
     int GetDepth();
-    void Update(float dt);
+    void Update(int dt);
     bool Is(std::string type);
 
 private:

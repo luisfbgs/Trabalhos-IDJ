@@ -13,7 +13,7 @@ public:
     ~State();
     bool QuitRequested();
     void LoadAssets();
-    void Update(float dt);
+    void Update(int dt);
     void Render();
 
 private:

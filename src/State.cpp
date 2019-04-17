@@ -8,6 +8,7 @@
 #include "TileSet.h"
 #include "TileMap.h"
 #include "InputManager.h"
+#include "Camera.h"
 
 State::State() {
     this->quitRequested = false;
@@ -51,7 +52,8 @@ void State::LoadAssets() {
 
 }
 
-void State::Update(float dt) {
+void State::Update(int dt) {
+    Camera::Update(dt);
     InputManager &input = InputManager::GetInstance();
     this->quitRequested = input.QuitRequested();
 

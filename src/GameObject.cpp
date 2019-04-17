@@ -11,7 +11,7 @@ GameObject::~GameObject() {
     this->components.clear();
 }
 
-void GameObject::Update(float dt) {
+void GameObject::Update(int dt) {
     for(std::shared_ptr<Component> component : this->components) {
         component->Update(dt);
     }

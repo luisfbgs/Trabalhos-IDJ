@@ -48,7 +48,7 @@ void Sprite::Render() {
     this->Render(this->associated.box.lefUp.x, this->associated.box.lefUp.y);
 }
 
-void Sprite::Update(float dt) {
+void Sprite::Update(int dt) {
     (void)dt;
 }
 

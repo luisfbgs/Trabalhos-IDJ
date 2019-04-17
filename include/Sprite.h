@@ -22,7 +22,7 @@ public:
     void SetClip(int x, int y, int w, int h);
     void Render(float x, float y);
     void Render();
-    void Update(float dt);
+    void Update(int dt);
     bool Is(std::string type);
     int GetWidth();
     int GetHeight();

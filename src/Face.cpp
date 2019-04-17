@@ -21,7 +21,7 @@ void Face::Damage(int damage) {
     }
 }
 
-void Face::Update(float dt) {
+void Face::Update(int dt) {
     (void)dt;
     InputManager &input = InputManager::GetInstance();
     if(input.MousePress(LEFT_MOUSE_BUTTON)) {

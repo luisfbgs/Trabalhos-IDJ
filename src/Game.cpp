@@ -9,6 +9,7 @@
 #include "InputManager.h"
 #include "Game.h"
 #include "State.h"
+#include "Camera.h"
 
 Game* Game::instance = nullptr;
 
@@ -27,6 +28,8 @@ Game::Game(const std::string &title, int width, int height) {
     this->window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, 0);
     this->renderer = SDL_CreateRenderer(this->window, -1, 0);
     this->state = new State();
+    this->dt = 0.0f;
+    this->frameStart = 0;
 }   
 
 Game::~Game() {
@@ -55,11 +58,23 @@ SDL_Renderer* Game::GetRenderer() {
 
 void Game::Run() {
     
+    Camera::speed = {0.7f, 0.7f};
     InputManager &input = InputManager::GetInstance();
     while(!this->state->QuitRequested()){
+        this->CalculateDeltaTime();
         input.Update();
-        this->state->Update(0.0f);
+        this->state->Update(dt);
         this->state->Render();
         SDL_RenderPresent(this->renderer);
     }
+}
+
+void Game::CalculateDeltaTime() {
+    int frame = SDL_GetTicks();
+    this->dt = frame - this->frameStart;
+    this->frameStart = frame;
+}
+
+int Game::GetDeltaTime() {
+    return this->dt;
 }

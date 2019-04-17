@@ -16,7 +16,7 @@ public:
     void Stop();
     void Open(std::string file);
     bool IsOpen();
-    void Update(float dt);
+    void Update(int dt);
     void Render();
     bool Is(std::string type);
 private:

@@ -9,19 +9,23 @@
 #include "State.h"
 
 class Game {
-private:
-	Game(const std::string &title, int width, int height);
-	static Game* instance;
-	SDL_Window* window;
-	SDL_Renderer* renderer;
-	State* state;
-
 public:
 	~Game();
+	static Game& GetInstance();
+	int GetDeltaTime();
 	void Run();
 	SDL_Renderer* GetRenderer();
 	State& GetState();
-	static Game& GetInstance();
+
+private:
+	Game(const std::string &title, int width, int height);
+	void CalculateDeltaTime(); 
+	static Game* instance;
+	int frameStart;
+	int dt;
+	SDL_Window* window;
+	SDL_Renderer* renderer;
+	State* state;
 };
 
 #endif

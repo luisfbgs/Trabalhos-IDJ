@@ -4,6 +4,7 @@
 #include "TileMap.h"
 #include "TileSet.h"
 #include "GameObject.h"
+#include "Camera.h"
 
 TileMap::TileMap(GameObject& associated, std::string file, std::shared_ptr<TileSet> tileSet) : Component(associated) {
     this->tileSet = tileSet;
@@ -33,14 +34,14 @@ int& TileMap::At(int x, int y, int z) {
 }
 
 void TileMap::RenderLayer(int layer, int cameraX, int cameraY) {
-    (void)cameraX;
-    (void)cameraY;
+    cameraX = Camera::pos.x * (layer + 1);
+    cameraY = Camera::pos.y * (layer + 1);
     for(int y = 0; y < this->mapHeight; y++) {
         for(int x = 0; x < this->mapWidth; x++) {
             int tileId = this->At(x, y, layer);
             float tileX = x * this->tileSet->GetTileWidth();
             float tileY = y * this->tileSet->GetTileHeight();
-            this->tileSet->RenderTile(tileId, tileX, tileY);
+            this->tileSet->RenderTile(tileId, tileX + cameraX, tileY + cameraY);
         }
     }
 }
@@ -63,7 +64,7 @@ int TileMap::GetDepth() {
     return this->mapDepth;
 }
 
-void TileMap::Update(float dt) {
+void TileMap::Update(int dt) {
     (void)dt;
 }
 

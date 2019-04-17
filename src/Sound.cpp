@@ -33,7 +33,7 @@ bool Sound::IsOpen() {
     return this->chunk != nullptr;
 }
 
-void Sound::Update(float dt) {
+void Sound::Update(int dt) {
     (void)dt;
 }
 
