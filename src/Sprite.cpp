@@ -37,20 +37,19 @@ void Sprite::SetClip(int x, int y, int w, int h) {
 
 void Sprite::Render(float x, float y) {
     if(this->IsOpen()) {
+        x -= Camera::pos.x;
+        y -= Camera::pos.y;
         SDL_Rect dstrect;
         dstrect.x = x;
         dstrect.y = y;
         dstrect.w = this->clipRect.w;
         dstrect.h = this->clipRect.h;
-        SDL_RenderCopy(Game::GetInstance().GetRenderer(), this->texture, &clipRect, &dstrect);
+        SDL_RenderCopy(Game::GetInstance().GetRenderer(), this->texture, &this->clipRect, &dstrect);
     }
 }
 
 void Sprite::Render() {
-    Vec2 renderPos = this->associated.box.lefUp;
-    renderPos.x -= Camera::pos.x;
-    renderPos.y -= Camera::pos.y;
-    this->Render(renderPos.x, renderPos.y);
+    this->Render(associated.box.lefUp.x, associated.box.lefUp.y);
 }
 
 void Sprite::Update(int dt) {

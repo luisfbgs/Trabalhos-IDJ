@@ -34,8 +34,8 @@ int& TileMap::At(int x, int y, int z) {
 }
 
 void TileMap::RenderLayer(int layer, int cameraX, int cameraY) {
-    cameraX = Camera::pos.x * (layer + 1);
-    cameraY = Camera::pos.y * (layer + 1);
+    cameraX = Camera::pos.x * layer;
+    cameraY = Camera::pos.y * layer;
     for(int y = 0; y < this->mapHeight; y++) {
         for(int x = 0; x < this->mapWidth; x++) {
             int tileId = this->At(x, y, layer);

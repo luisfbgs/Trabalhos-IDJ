@@ -62,7 +62,7 @@ void Game::Run() {
     while(!this->state->QuitRequested()){
         this->CalculateDeltaTime();
         input.Update();
-        this->state->Update(dt);
+        this->state->Update(this->dt);
         this->state->Render();
         SDL_RenderPresent(this->renderer);
     }
