@@ -18,7 +18,7 @@ public:
     bool IsOpen();
     void Update(int dt);
     void Render();
-    bool Is(std::string type);
+    bool Is(const std::string &type);
 private:
     Mix_Chunk* chunk; 
     int channel;

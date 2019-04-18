@@ -19,7 +19,7 @@ public:
     int GetHeight();
     int GetDepth();
     void Update(int dt);
-    bool Is(std::string type);
+    bool Is(const std::string &type);
 
 private:
     std::vector<int> tileMatrix;

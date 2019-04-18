@@ -27,7 +27,7 @@ void Face::Update(int dt) {
     InputManager &input = InputManager::GetInstance();
     if(input.MousePress(LEFT_MOUSE_BUTTON)) {
         int mouseX = input.GetMouseX(), mouseY = input.GetMouseY();
-        if((this->associated.box + Camera::pos).Contains(mouseX, mouseY)) {
+        if((this->associated.box - Camera::pos).Contains(mouseX, mouseY)) {
             this->Damage(randInt(10, 19));
         }
     }
@@ -35,6 +35,6 @@ void Face::Update(int dt) {
 
 void Face::Render() {}
 
-bool Face::Is(std::string type) {
+bool Face::Is(const std::string &type) {
     return type == "Face";
 }

@@ -8,14 +8,12 @@
 #define INCLUDE_SDL_IMAGE
 #include "SDL_include.h"
 
-Sprite::Sprite(GameObject& associated, bool shouldMove) : Component(associated) {
+Sprite::Sprite(GameObject& associated) : Component(associated) {
     this->texture = nullptr;
-    this->shouldMove = shouldMove;
 }
 
-Sprite::Sprite(GameObject& associated, const std::string &file, bool shouldMove) : Component(associated) {
+Sprite::Sprite(GameObject& associated, const std::string &file) : Component(associated) {
     this->texture = nullptr;
-    this->shouldMove = shouldMove;
     this->Open(file);
 }
 
@@ -50,9 +48,8 @@ void Sprite::Render(float x, float y) {
 
 void Sprite::Render() {
     Vec2 renderPos = this->associated.box.lefUp;
-    if(this->shouldMove) {
-        renderPos = renderPos + Camera::pos;
-    }
+    renderPos.x -= Camera::pos.x;
+    renderPos.y -= Camera::pos.y;
     this->Render(renderPos.x, renderPos.y);
 }
 
@@ -60,7 +57,7 @@ void Sprite::Update(int dt) {
     (void)dt;
 }
 
-bool Sprite::Is(std::string type) {
+bool Sprite::Is(const std::string &type) {
     return type == "Sprite";
 }
 

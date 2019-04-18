@@ -41,7 +41,7 @@ void TileMap::RenderLayer(int layer, int cameraX, int cameraY) {
             int tileId = this->At(x, y, layer);
             float tileX = x * this->tileSet->GetTileWidth();
             float tileY = y * this->tileSet->GetTileHeight();
-            this->tileSet->RenderTile(tileId, tileX + cameraX, tileY + cameraY);
+            this->tileSet->RenderTile(tileId, tileX - cameraX, tileY - cameraY);
         }
     }
 }
@@ -68,6 +68,6 @@ void TileMap::Update(int dt) {
     (void)dt;
 }
 
-bool TileMap::Is(std::string type) {
+bool TileMap::Is(const std::string &type) {
     return type == "TileMap";
 }

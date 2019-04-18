@@ -25,7 +25,7 @@ void Camera::Update(int dt) {
         int down = input.IsKeyDown('s');
         int left = input.IsKeyDown('a');
         int right = input.IsKeyDown('d');
-        Vec2 deltaPos(left - right, up - down);
+        Vec2 deltaPos(right - left, down - up);
         if(deltaPos.Length() != 0) {
             deltaPos = deltaPos.Norm();
             deltaPos.x *= speed.x;

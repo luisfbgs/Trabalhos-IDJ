@@ -11,7 +11,7 @@ public:
     void Damage(int damage);
     void Update(int dt);
     void Render();
-    bool Is(std::string type);
+    bool Is(const std::string &type);
 
 private:
     int hitpoints;

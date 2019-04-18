@@ -39,6 +39,6 @@ void Sound::Update(int dt) {
 
 void Sound::Render() {}
 
-bool Sound::Is(std::string type) {
+bool Sound::Is(const std::string &type) {
     return type == "Sound";
 }

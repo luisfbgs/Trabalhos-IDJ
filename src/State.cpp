@@ -9,18 +9,21 @@
 #include "TileMap.h"
 #include "InputManager.h"
 #include "Camera.h"
+#include "CameraFollower.h"
 
 State::State() {
     this->quitRequested = false;
 
     std::shared_ptr<GameObject> background(new GameObject());
-    std::shared_ptr<Sprite> backgroundSprite(new Sprite(*background, std::string("assets/img/ocean.jpg"), false));
+    std::shared_ptr<Sprite> backgroundSprite(new Sprite(*background, std::string("assets/img/ocean.jpg")));
     background->box.lefUp.x = 0;
     background->box.lefUp.y = 0;
     background->box.w = backgroundSprite->GetWidth();
     background->box.h = backgroundSprite->GetHeight();
+    std::shared_ptr<CameraFollower> cameraFollower(new CameraFollower(*background));
     
     background->AddComponent(backgroundSprite);
+    background->AddComponent(cameraFollower);
 
     std::shared_ptr<GameObject> gameTile(new GameObject());   
     std::shared_ptr<Sprite> tileSprite(new Sprite(*gameTile, std::string("assets/img/tileset.png")));
@@ -89,6 +92,7 @@ void State::AddObject(int mouseX, int mouseY) {
     enemy->box.lefUp.y = mouseY;
     enemy->box.w = enemySprite->GetWidth();
     enemy->box.h = enemySprite->GetHeight();
+    enemy->box = enemy->box + Camera::pos;
 
     std::shared_ptr<Sound> enemySound(new Sound(*enemy, std::string("assets/audio/boom.wav")));
     enemy->AddComponent(enemySprite);

@@ -11,6 +11,7 @@ public:
     float w, h;
 
     Rect operator+(const Vec2 &o) const;
+    Rect operator-(const Vec2 &o) const;
     Vec2 Center() const;
     bool Contains(float x, float y) const;
     float Dist(const Rect &o) const;

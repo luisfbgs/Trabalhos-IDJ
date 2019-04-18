@@ -9,6 +9,10 @@ Rect Rect::operator+(const Vec2 &o) const {
     return {this->lefUp + o, w, h};
 }
 
+Rect Rect::operator-(const Vec2 &o) const {
+    return {this->lefUp - o, w, h};
+}
+
 Vec2 Rect::Center() const {
     return {this->lefUp.x + this->w / 2,
             this->lefUp.y + this->h / 2};
