@@ -12,7 +12,7 @@ public:
     void virtual Update(int dt) = 0;
     void virtual Render() = 0;
     bool virtual Is(const std::string& type) = 0;
-
+    void virtual Start();
 protected:
     GameObject& associated;
 };

@@ -5,6 +5,7 @@
 
 GameObject::GameObject() {
     this->isDead = false;
+    this->started = false;
 }
 
 GameObject::~GameObject() {
@@ -32,6 +33,9 @@ void GameObject::RequestDelete() {
 }
 
 void GameObject::AddComponent(std::shared_ptr<Component> cpt) {
+    if(this->started) {
+        cpt->Start();
+    }
     this->components.emplace_back(cpt);
 }
 
@@ -51,4 +55,11 @@ std::shared_ptr<Component> GameObject::GetComponent(std::string type) {
         }
     }
     return nullptr;
+}
+
+void GameObject::Start() {
+    this->started = true;
+    for(std::shared_ptr<Component> c : this->components) {
+        c->Start();
+    }
 }

@@ -57,6 +57,7 @@ SDL_Renderer* Game::GetRenderer() {
 }
 
 void Game::Run() {
+    this->state->Start();
     Camera::speed = {0.7f, 0.7f};
     InputManager &input = InputManager::GetInstance();
     while(!this->state->QuitRequested()){

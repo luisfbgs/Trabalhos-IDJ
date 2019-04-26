@@ -3,7 +3,6 @@
 #include "Sprite.h"
 #include "Sound.h"
 #include "GameObject.h"
-#include "Face.h"
 #include "Common.h"
 #include "TileSet.h"
 #include "TileMap.h"
@@ -13,34 +12,7 @@
 
 State::State() {
     this->quitRequested = false;
-
-    std::shared_ptr<GameObject> background(new GameObject());
-    std::shared_ptr<Sprite> backgroundSprite(new Sprite(*background, std::string("assets/img/ocean.jpg")));
-    background->box.lefUp.x = 0;
-    background->box.lefUp.y = 0;
-    background->box.w = backgroundSprite->GetWidth();
-    background->box.h = backgroundSprite->GetHeight();
-    std::shared_ptr<CameraFollower> cameraFollower(new CameraFollower(*background));
-    
-    background->AddComponent(backgroundSprite);
-    background->AddComponent(cameraFollower);
-
-    std::shared_ptr<GameObject> gameTile(new GameObject());   
-    std::shared_ptr<Sprite> tileSprite(new Sprite(*gameTile, std::string("assets/img/tileset.png")));
-    gameTile->box.lefUp.x = 0;
-    gameTile->box.lefUp.y = 0;
-    gameTile->box.w = tileSprite->GetWidth();
-    gameTile->box.h = tileSprite->GetHeight();
-
-    this->tileSet = std::shared_ptr<TileSet>(new TileSet(64, 64, tileSprite));
-    std::shared_ptr<TileMap> tileMap(new TileMap(*gameTile, std::string("assets/map/tileMap.txt"), tileSet));
-
-    gameTile->AddComponent(tileMap);
-
-    this->objectArray.emplace_back(background);
-    this->objectArray.emplace_back(gameTile);
-    music.Open(std::string("assets/audio/stageState.ogg"));
-    music.Play();
+    this->started = false;
 }
 
 State::~State() {
@@ -52,20 +24,39 @@ bool State::QuitRequested() {
 }
 
 void State::LoadAssets() {
+    GameObject* background = new GameObject();
+    std::shared_ptr<Sprite> backgroundSprite(new Sprite(*background, std::string("assets/img/ocean.jpg")));
+    background->box.lefUp.x = 0;
+    background->box.lefUp.y = 0;
+    background->box.w = backgroundSprite->GetWidth();
+    background->box.h = backgroundSprite->GetHeight();
+    std::shared_ptr<CameraFollower> cameraFollower(new CameraFollower(*background));
+    
+    background->AddComponent(backgroundSprite);
+    background->AddComponent(cameraFollower);
 
+    GameObject* gameTile = new GameObject();   
+    std::shared_ptr<Sprite> tileSprite(new Sprite(*gameTile, std::string("assets/img/tileset.png")));
+    gameTile->box.lefUp.x = 0;
+    gameTile->box.lefUp.y = 0;
+    gameTile->box.w = tileSprite->GetWidth();
+    gameTile->box.h = tileSprite->GetHeight();
+
+    this->tileSet = std::shared_ptr<TileSet>(new TileSet(64, 64, tileSprite));
+    std::shared_ptr<TileMap> tileMap(new TileMap(*gameTile, std::string("assets/map/tileMap.txt"), tileSet));
+
+    gameTile->AddComponent(tileMap);
+
+    this->AddObject(background);
+    this->AddObject(gameTile);
+    music.Open(std::string("assets/audio/stageState.ogg"));
+    music.Play();
 }
 
 void State::Update(int dt) {
     Camera::Update(dt);
     InputManager &input = InputManager::GetInstance();
     this->quitRequested = input.QuitRequested();
-
-    // Create a penguin face if space bar is pressed
-    if(input.KeyPress(' ')) {
-        int mouseX = input.GetMouseX(), mouseY = input.GetMouseY();
-        Vec2 objPos = Vec2(200, 0).Rotate(randReal(0.0f, 360.0f)) + Vec2(mouseX, mouseY);
-        this->AddObject((int)objPos.x, (int)objPos.y);
-    }
 
     for(std::shared_ptr<GameObject> object : this->objectArray) {
         object->Update(dt);
@@ -85,21 +76,21 @@ void State::Render() {
     }
 }
 
-void State::AddObject(int mouseX, int mouseY) {
-    std::shared_ptr<GameObject> enemy(new GameObject());
-    std::shared_ptr<Sprite> enemySprite(new Sprite(*enemy, std::string("assets/img/penguinface.png")));
-    enemy->box.lefUp.x = mouseX;
-    enemy->box.lefUp.y = mouseY;
-    enemy->box.w = enemySprite->GetWidth();
-    enemy->box.h = enemySprite->GetHeight();
-    enemy->box = enemy->box + Camera::pos;
-
-    std::shared_ptr<Sound> enemySound(new Sound(*enemy, std::string("assets/audio/boom.wav")));
-    enemy->AddComponent(enemySprite);
-    enemy->AddComponent(enemySound);
+std::weak_ptr<GameObject> State::AddObject(GameObject* go) {
+    std::shared_ptr<GameObject> go_ptr(go);
     
-    std::shared_ptr<Face> enemyFace(new Face(*enemy));
-    enemy->AddComponent(enemyFace);
+    if(!go->started) {
+        go->Start();
+    }
 
-    this->objectArray.emplace_back(enemy);
+    this->objectArray.emplace_back(go_ptr);
+    std::weak_ptr<GameObject> ret(go_ptr);
+    return ret;
+}
+
+void State::Start() {
+    this->LoadAssets();
+    for(std::shared_ptr<GameObject> object : this->objectArray) {
+        object->Start();
+    }
 }
