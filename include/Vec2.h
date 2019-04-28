@@ -7,7 +7,9 @@ public:
     float x, y;
 
     Vec2 operator+(const Vec2 &o) const;
+    Vec2 operator+=(const Vec2 &o);
 	Vec2 operator-(const Vec2 &o) const;
+	Vec2 operator-=(const Vec2 &o);
 	Vec2 operator*(float t) const;
 	Vec2 operator/(float t) const;
 	Vec2 Rotate(float ang) const;

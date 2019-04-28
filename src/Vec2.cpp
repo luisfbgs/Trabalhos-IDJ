@@ -8,8 +8,18 @@ Vec2 Vec2::operator+(const Vec2 &o) const {
     return {this->x + o.x, this->y + o.y};
 }
 
+Vec2 Vec2::operator+=(const Vec2 &o) {
+    *this = *this + o;
+    return *this;
+}
+
 Vec2 Vec2::operator-(const Vec2 &o) const {
     return {this->x - o.x, this->y - o.y};
+}
+
+Vec2 Vec2::operator-=(const Vec2 &o) {
+    *this = *this - o;
+    return *this;
 }
 
 Vec2 Vec2::operator*(float t) const {

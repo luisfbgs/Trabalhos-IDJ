@@ -8,6 +8,7 @@
 #include "TileMap.h"
 #include "InputManager.h"
 #include "Camera.h"
+#include "Alien.h"
 #include "CameraFollower.h"
 
 State::State() {
@@ -47,8 +48,16 @@ void State::LoadAssets() {
 
     gameTile->AddComponent(tileMap);
 
+    GameObject* alienGO = new GameObject();
+
+    std::shared_ptr<Alien> alien(new Alien(*alienGO, 0));
+    alienGO->AddComponent(alien);
+
+    alienGO->box.CenterIn({512, 300});
+    
     this->AddObject(background);
     this->AddObject(gameTile);
+    this->AddObject(alienGO);
     music.Open(std::string("assets/audio/stageState.ogg"));
     music.Play();
 }

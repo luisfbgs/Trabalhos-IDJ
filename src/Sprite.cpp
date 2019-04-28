@@ -22,6 +22,7 @@ void Sprite::Open(const std::string &file) {
     assert(this->texture != nullptr);
     SDL_QueryTexture(this->texture, nullptr, nullptr, &this->width, &this->height);
     this->SetClip(0, 0, this->width, this->height);
+    this->associated.box = {0, 0, (float)this->width, (float)this->height};
 }
 
 bool Sprite::IsOpen() {

@@ -14,13 +14,13 @@ public:
     void Start();
     void Update(int dt);
     void Render();
-    bool Is(std::string type);
+    bool Is(const std::string &type);
 
 private:
     class Action {
     public:
-        struct ActionType{
-            enum {MOVE, SHOOT};
+        enum class ActionType{
+            MOVE, SHOOT
         };
         Action (ActionType type, float x, float y);
         ActionType type;
@@ -29,7 +29,7 @@ private:
     Vec2 speed;
     int hp;
     std::queue<Action> taskQueue;
-    std::vector< std::weak_ptr<GameObject> > minionArray;
+    std::vector<std::weak_ptr<GameObject>> minionArray;
 };
 
 #endif

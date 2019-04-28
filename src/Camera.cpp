@@ -32,6 +32,6 @@ void Camera::Update(int dt) {
             deltaPos.y *= speed.y;
             deltaPos = deltaPos * dt;
         }
-        Camera::pos = Camera::pos + deltaPos;
+        Camera::pos += deltaPos;
     }
 }

@@ -13,6 +13,7 @@ public:
     Rect operator+(const Vec2 &o) const;
     Rect operator-(const Vec2 &o) const;
     Vec2 Center() const;
+    void CenterIn(const Vec2 &pos);
     bool Contains(float x, float y) const;
     float Dist(const Rect &o) const;
 };

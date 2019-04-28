@@ -18,6 +18,11 @@ Vec2 Rect::Center() const {
             this->lefUp.y + this->h / 2};
 }
 
+void Rect::CenterIn(const Vec2 &pos) {
+    this->lefUp = pos;
+    this->lefUp += pos - this->Center(); 
+}
+
 bool Rect::Contains(float x, float y) const {
     return (x >= this->lefUp.x && x <= this->lefUp.x + this->w
             && y >= this->lefUp.y && y <= this->lefUp.y + this->h);
