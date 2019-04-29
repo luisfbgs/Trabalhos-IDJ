@@ -50,7 +50,7 @@ void State::LoadAssets() {
 
     GameObject* alienGO = new GameObject();
 
-    std::shared_ptr<Alien> alien(new Alien(*alienGO, 0));
+    std::shared_ptr<Alien> alien(new Alien(*alienGO, 15));
     alienGO->AddComponent(alien);
 
     alienGO->box.CenterIn({512, 300});
@@ -88,7 +88,7 @@ void State::Render() {
 std::weak_ptr<GameObject> State::AddObject(GameObject* go) {
     std::shared_ptr<GameObject> go_ptr(go);
     
-    if(!go->started) {
+    if(this->started && !go->started) {
         go->Start();
     }
 
@@ -97,9 +97,20 @@ std::weak_ptr<GameObject> State::AddObject(GameObject* go) {
     return ret;
 }
 
+std::weak_ptr<GameObject> State::GetObjectPtr(GameObject* go) {
+    for(std::shared_ptr<GameObject> object : this->objectArray) {
+        if(object.get() == go) {
+            return object;
+        }
+    }
+    return std::weak_ptr<GameObject>();
+}
+
 void State::Start() {
     this->LoadAssets();
-    for(std::shared_ptr<GameObject> object : this->objectArray) {
+    for(int i = 0; i < (int)this->objectArray.size(); i++) {
+        std::shared_ptr<GameObject> object = this->objectArray[i];
         object->Start();
     }
+    this->started = true;
 }

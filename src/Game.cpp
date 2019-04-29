@@ -78,3 +78,7 @@ void Game::CalculateDeltaTime() {
 int Game::GetDeltaTime() {
     return this->dt;
 }
+
+State& Game::GetState() {
+    return *this->state;
+}

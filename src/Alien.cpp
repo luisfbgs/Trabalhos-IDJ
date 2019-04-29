@@ -1,13 +1,19 @@
 #include <memory>
+#include <queue>
 #include "Alien.h"
+#include "Component.h"
 #include "Sprite.h"
 #include "InputManager.h"
 #include "Vec2.h"
 #include "Camera.h"
+#include "GameObject.h"
+#include "Minion.h"
+#include "Game.h"
 
 Alien::Alien(GameObject& associated, int nMinions) : Component(associated) {
     std::shared_ptr<Sprite> alienSprite(new Sprite(this->associated, "assets/img/alien.png"));
     this->associated.AddComponent(alienSprite);
+    this->nMinions = nMinions;
 }
 
 Alien::~Alien() {
@@ -15,7 +21,23 @@ Alien::~Alien() {
 }
 
 void Alien::Start() {
+    if(this->nMinions) {
+        std::weak_ptr<GameObject> myPtr = Game::GetInstance().GetState().GetObjectPtr(&this->associated);
+        float arc = 360.0 / this->nMinions;
+        for(int i = 0; i < this->nMinions; i++) {
+            GameObject *minionGO = new GameObject();
 
+            std::shared_ptr<Minion> minion(new Minion(*minionGO, myPtr, arc * i));
+            std::shared_ptr<Sprite> minionSprite(new Sprite(*minionGO, "assets/img/minion.png"));
+
+            minionGO->AddComponent(minion);
+            minionGO->AddComponent(minionSprite);
+
+            std::weak_ptr<GameObject> newMinion;
+            newMinion = Game::GetInstance().GetState().AddObject(minionGO);
+            this->minionArray.push_back(newMinion);
+        }
+    }
 }
 
 void Alien::Update(int dt) {
