@@ -9,6 +9,7 @@
 #include "GameObject.h"
 #include "Minion.h"
 #include "Game.h"
+#include "Common.h"
 
 Alien::Alien(GameObject& associated, int nMinions) : Component(associated) {
     std::shared_ptr<Sprite> alienSprite(new Sprite(this->associated, "assets/img/alien.png"));
@@ -29,6 +30,7 @@ void Alien::Start() {
 
             std::shared_ptr<Minion> minion(new Minion(*minionGO, myPtr, arc * i));
             std::shared_ptr<Sprite> minionSprite(new Sprite(*minionGO, "assets/img/minion.png"));
+            minionSprite->SetScale(randReal(1.0f, 1.5f), randReal(1.0f, 1.5f));
 
             minionGO->AddComponent(minion);
             minionGO->AddComponent(minionSprite);
@@ -41,13 +43,16 @@ void Alien::Start() {
 }
 
 void Alien::Update(int dt) {
+    Sprite *mySprite = dynamic_cast<Sprite*>(this->associated.GetComponent("Sprite").get());
+    mySprite->SetAngle(mySprite->GetAngle() - 0.09 * dt);
+        
     InputManager &input = InputManager::GetInstance();
     if(input.MousePress(RIGHT_MOUSE_BUTTON)) {
         Alien::Action nAction(Action::ActionType::MOVE, input.GetMouseX() + Camera::pos.x, input.GetMouseY() + Camera::pos.y);
         this->taskQueue.push(nAction);
     }
     if(input.MousePress(LEFT_MOUSE_BUTTON)) {
-        Alien::Action nAction(Action::ActionType::SHOOT, input.GetMouseX(), input.GetMouseY());
+        Alien::Action nAction(Action::ActionType::SHOOT, input.GetMouseX() + Camera::pos.x, input.GetMouseY() + Camera::pos.y);
         this->taskQueue.push(nAction);
     }
     if(!this->taskQueue.empty()) {
@@ -64,6 +69,16 @@ void Alien::Update(int dt) {
             }
         }
         else if(doIt.type == Action::ActionType::SHOOT) {
+            int id = 0;
+            float minDist = minionArray[0].lock()->box.Center().Dist(doIt.pos);
+            for(int i = 1; i < nMinions; i++) {
+                if(minionArray[i].lock()->box.Center().Dist(doIt.pos) < minDist) {
+                    id = i;
+                    minDist = minionArray[i].lock()->box.Center().Dist(doIt.pos);
+                }
+            }
+            Minion *shooter = dynamic_cast<Minion*>(minionArray[id].lock()->GetComponent("Minion").get());
+            shooter->Shoot(doIt.pos);
             taskQueue.pop();
         }
     }

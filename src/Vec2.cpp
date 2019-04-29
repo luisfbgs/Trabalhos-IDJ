@@ -26,6 +26,11 @@ Vec2 Vec2::operator*(float t) const {
     return {this->x * t, this->y * t};
 }
 
+Vec2 Vec2::operator*=(float t) {
+    *this = *this * t;
+    return *this;
+}
+
 Vec2 Vec2::operator/(float t) const {
     return {this->x / t, this->y / t};
 }

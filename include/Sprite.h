@@ -4,20 +4,19 @@
 #include <string>
 #include "Component.h"
 #include "GameObject.h"
+#include "Vec2.h"
 
 #define INCLUDE_SDL
 #include "SDL_include.h"
 
 class Sprite : public Component{
-private:
-    SDL_Texture* texture;  
-    int width;
-    int height;
-    SDL_Rect clipRect;
-
 public:
     Sprite(GameObject& associated);
     Sprite(GameObject& associated, const std::string &file);
+    void SetScale(float scaleX, float scaleY); 
+    Vec2 GetScale();
+    void SetAngle(float angle);
+    float GetAngle();
     void Open(const std::string &file);  
     void SetClip(int x, int y, int w, int h);
     void Render(float x, float y);
@@ -27,6 +26,14 @@ public:
     int GetWidth();
     int GetHeight();
     bool IsOpen();
+
+private:
+    SDL_Texture* texture;  
+    int width;
+    int height;
+    SDL_Rect clipRect;
+    Vec2 scale;
+    float angle;
 };
 
 #endif

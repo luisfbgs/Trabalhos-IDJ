@@ -7,7 +7,7 @@
 #include "GameObject.h"
 #include "Component.h"
 
-const float kRotationArc = 0.18;
+const float kRotationArc = 0.12;
 
 class Minion : public Component{
 public:

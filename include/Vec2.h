@@ -11,6 +11,7 @@ public:
 	Vec2 operator-(const Vec2 &o) const;
 	Vec2 operator-=(const Vec2 &o);
 	Vec2 operator*(float t) const;
+	Vec2 operator*=(float t);
 	Vec2 operator/(float t) const;
 	Vec2 Rotate(float ang) const;
 	Vec2 Norm() const;

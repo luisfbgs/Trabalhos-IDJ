@@ -50,7 +50,7 @@ void State::LoadAssets() {
 
     GameObject* alienGO = new GameObject();
 
-    std::shared_ptr<Alien> alien(new Alien(*alienGO, 15));
+    std::shared_ptr<Alien> alien(new Alien(*alienGO, 10));
     alienGO->AddComponent(alien);
 
     alienGO->box.CenterIn({512, 300});
@@ -67,7 +67,8 @@ void State::Update(int dt) {
     InputManager &input = InputManager::GetInstance();
     this->quitRequested = input.QuitRequested();
 
-    for(std::shared_ptr<GameObject> object : this->objectArray) {
+    for(int i = 0; i < (int)this->objectArray.size(); i++) {
+        std::shared_ptr<GameObject> object = this->objectArray[i];
         object->Update(dt);
     }
     
