@@ -65,7 +65,7 @@ void State::LoadAssets() {
 void State::Update(int dt) {
     Camera::Update(dt);
     InputManager &input = InputManager::GetInstance();
-    this->quitRequested = input.QuitRequested();
+    this->quitRequested = input.IsKeyDown(ESCAPE_KEY) | input.QuitRequested();
 
     for(int i = 0; i < (int)this->objectArray.size(); i++) {
         std::shared_ptr<GameObject> object = this->objectArray[i];
@@ -81,8 +81,18 @@ void State::Update(int dt) {
 }
 
 void State::Render() {
+    TileMap *tileMap = nullptr;
+    
     for(std::shared_ptr<GameObject> object : this->objectArray) {
         object->Render();
+        Component *aux = object->GetComponent("TileMap").get();
+        if(aux != nullptr) {
+            tileMap = dynamic_cast<TileMap*>(aux);
+        }
+    }
+
+    if(tileMap != nullptr) {
+        tileMap->RenderLayer(1);
     }
 }
 
