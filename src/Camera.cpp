@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "Vec2.h"
 #include "InputManager.h"
+#include "Game.h"
 
 GameObject* Camera::focus = nullptr;
 Vec2 Camera::pos(0, 0);
@@ -17,7 +18,8 @@ void Camera::Unfollow() {
 
 void Camera::Update(int dt) {
     if(focus != nullptr) {
-        Camera::pos = focus->box.lefUp;
+        Game& game = Game::GetInstance();
+        Camera::pos = focus->box.Center() - Vec2(game.GetWidth() / 2.0f, game.GetHeight() / 2.0f);
     }
     else {
         InputManager &input = InputManager::GetInstance();

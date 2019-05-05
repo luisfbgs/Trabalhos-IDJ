@@ -10,6 +10,7 @@
 #include "Camera.h"
 #include "Alien.h"
 #include "CameraFollower.h"
+#include "PenguinBody.h"
 
 State::State() {
     this->quitRequested = false;
@@ -55,9 +56,20 @@ void State::LoadAssets() {
 
     alienGO->box.CenterIn({512, 300});
     
+    GameObject* penguinGO = new GameObject();
+
+    std::shared_ptr<PenguinBody> penguin(new PenguinBody(*penguinGO));
+    penguinGO->AddComponent(penguin);
+
+    penguinGO->box.CenterIn({704, 640});
+    
     this->AddObject(background);
     this->AddObject(gameTile);
     this->AddObject(alienGO);
+    this->AddObject(penguinGO);
+
+    Camera::Follow(penguinGO);
+
     music.Open(std::string("assets/audio/stageState.ogg"));
     music.Play();
 }

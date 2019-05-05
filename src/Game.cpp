@@ -28,8 +28,10 @@ Game::Game(const std::string &title, int width, int height) {
     this->window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, 0);
     this->renderer = SDL_CreateRenderer(this->window, -1, 0);
     this->state = new State();
-    this->dt = 0.0f;
+    this->dt = 0;
     this->frameStart = 0;
+    this->width = width;
+    this->height = height;
 }   
 
 Game::~Game() {
@@ -81,4 +83,12 @@ int Game::GetDeltaTime() {
 
 State& Game::GetState() {
     return *this->state;
+}
+
+int Game::GetHeight() {
+    return this->height;
+}
+
+int Game::GetWidth() {
+    return this->width;
 }

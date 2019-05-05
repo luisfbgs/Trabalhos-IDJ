@@ -5,9 +5,9 @@
 #include "Sprite.h"
 #include "Common.h"
 
-Bullet::Bullet(GameObject &associated, float angle, float speed, int damage, float maxDistance, std::string sprite) : Component(associated) {
+Bullet::Bullet(GameObject &associated, float angle, float speed, int damage, float maxDistance, std::string sprite, int frames) : Component(associated) {
     (void)damage;
-    std::shared_ptr<Sprite> bulletSprite (new Sprite(this->associated, sprite));
+    std::shared_ptr<Sprite> bulletSprite (new Sprite(this->associated, sprite, frames, 150));
     bulletSprite->SetAngle(angle);
     bulletSprite->SetScale(1.5f, 1.5f);
 

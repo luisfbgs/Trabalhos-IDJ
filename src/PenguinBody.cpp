@@ -1,0 +1,68 @@
+#include <memory>
+#include <string>
+#include <algorithm>
+#include "PenguinBody.h"
+#include "PenguinCannon.h"
+#include "Sprite.h"
+#include "Component.h"
+#include "GameObject.h"
+#include "Vec2.h"
+#include "Game.h"
+#include "InputManager.h"
+
+PenguinBody* PenguinBody::player = nullptr;
+
+PenguinBody::PenguinBody(GameObject& associated) : Component(associated) {
+    player = this;
+
+    std::shared_ptr<Sprite> bodySprite (new Sprite(this->associated, std::string("assets/img/penguin.png"), 1, 100));
+    this->associated.AddComponent(bodySprite);
+    this->angle = 0;
+}
+
+PenguinBody::~PenguinBody() {
+    player = nullptr;
+}
+
+void PenguinBody::Start() {
+    GameObject* cannonGO = new GameObject();
+    std::shared_ptr<PenguinCannon> cannon(new PenguinCannon(*cannonGO));
+    cannonGO->AddComponent(cannon);
+
+    pcannon = Game::GetInstance().GetState().AddObject(cannonGO);
+}
+
+void PenguinBody::Update(int dt) {
+    InputManager& input = InputManager::GetInstance();
+
+    if(input.IsKeyDown('w')) {
+        this->linearSpeed = std::min(2.3f, this->linearSpeed + dt / 1000.0f);
+    }
+    if(input.IsKeyDown('s')) {
+        this->linearSpeed = std::max(0.0f, this->linearSpeed - dt / 600.0f);
+    }
+    if(input.IsKeyDown('a')) {
+        this->angle = angle - dt / 3.0f;
+    }
+    if(input.IsKeyDown('d')) {
+        this->angle = angle + dt / 3.0f;
+    }
+
+    Sprite *mySprite = dynamic_cast<Sprite*>(this->associated.GetComponent("Sprite").get());
+    mySprite->SetAngle(this->angle);
+    
+    this->speed = Vec2(1, 0).Rotate(angle);
+    this->speed *= this->linearSpeed;
+    this->associated.box.CenterIn(this->associated.box.Center() + this->speed);
+    pcannon.lock()->box.CenterIn(this->associated.box.Center());
+
+    if(this->hp <= 0) {
+        this->associated.RequestDelete();
+    }
+}
+
+void PenguinBody::Render() {}
+
+bool PenguinBody::Is(const std::string& type) {
+    return type == "PenguinBody";
+}

@@ -37,7 +37,7 @@ void Minion::Shoot(Vec2 target) {
     GameObject *bulletGO = new GameObject();
 
     float angle = (target - this->associated.box.Center()).Angle();
-    std::shared_ptr<Bullet> bullet(new Bullet(*bulletGO, angle, 0.6, 1, 600, std::string("assets/img/minionbullet1.png")));
+    std::shared_ptr<Bullet> bullet(new Bullet(*bulletGO, angle, 0.6, 1, 600, std::string("assets/img/minionbullet2.png"), 3));
     bulletGO->box.CenterIn(this->associated.box.Center());
     bulletGO->AddComponent(bullet);
 

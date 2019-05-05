@@ -8,23 +8,25 @@
 #define INCLUDE_SDL_IMAGE
 #include "SDL_include.h"
 
-Sprite::Sprite(GameObject& associated) : Component(associated) {
+Sprite::Sprite(GameObject& associated, int frameCount, int frameTime) : Component(associated) {
     this->texture = nullptr;
     this->scale = {1, 1};
     this->angle = 0;
+    this->frameCount = frameCount;
+    this->frameTime = frameTime;
+    this->timeElapsed = 0;
+    this->currentFrame = 0;
 }
 
-Sprite::Sprite(GameObject& associated, const std::string &file) : Component(associated) {
-    this->texture = nullptr;
+Sprite::Sprite(GameObject& associated, const std::string &file, int frameCount, int frameTime) : Sprite(associated, frameCount, frameTime) {
     this->Open(file);
-    this->scale = {1, 1};
-    this->angle = 0;
 }
 
 void Sprite::Open(const std::string &file) {
     this->texture = Resources::GetImage(file.c_str());
     assert(this->texture != nullptr);
     SDL_QueryTexture(this->texture, nullptr, nullptr, &this->width, &this->height);
+    this->width /= this->frameCount;
     this->SetClip(0, 0, this->width, this->height);
     this->associated.box = {this->associated.box.lefUp, (float)this->width, (float)this->height};
 }
@@ -58,7 +60,12 @@ void Sprite::Render() {
 }
 
 void Sprite::Update(int dt) {
-    (void)dt;
+    this->timeElapsed += dt;
+    if(this->timeElapsed > this->frameTime) {
+        this->currentFrame++;
+        this->currentFrame %= this->frameCount;
+    }
+    this->SetClip(this->currentFrame * this->width, 0, this->width, this->height);
 }
 
 bool Sprite::Is(const std::string &type) {
@@ -87,4 +94,14 @@ void Sprite::SetAngle(float angle) {
 
 float Sprite::GetAngle() {
     return this->angle;
+}
+
+void Sprite::SetFrame(int frame) {
+    this->currentFrame = frame;
+}
+
+void Sprite::SetFrameCount(int frameCount) {
+    this->width *= this->frameCount;
+    this->frameCount = frameCount;
+    this->width /= this->frameCount;
 }
