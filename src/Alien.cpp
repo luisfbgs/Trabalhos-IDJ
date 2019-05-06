@@ -10,11 +10,18 @@
 #include "Minion.h"
 #include "Game.h"
 #include "Common.h"
+#include "Collider.h"
+#include "Bullet.h"
 
 Alien::Alien(GameObject& associated, int nMinions) : Component(associated) {
     std::shared_ptr<Sprite> alienSprite(new Sprite(this->associated, "assets/img/alien.png"));
     this->associated.AddComponent(alienSprite);
+
+    std::shared_ptr<Collider> alienCollider (new Collider(this->associated));
+    this->associated.AddComponent(alienCollider);
+
     this->nMinions = nMinions;
+    this->hp = 10;
 }
 
 Alien::~Alien() {
@@ -43,6 +50,10 @@ void Alien::Start() {
 }
 
 void Alien::Update(int dt) {
+    if(this->hp <= 0) {
+        this->associated.RequestDelete();
+        return;
+    }
     Sprite *mySprite = dynamic_cast<Sprite*>(this->associated.GetComponent("Sprite").get());
     mySprite->SetAngle(mySprite->GetAngle() - 0.09 * dt);
         
@@ -88,6 +99,15 @@ void Alien::Render() {}
 
 bool Alien::Is(const std::string &type) {
     return type == "Alien";
+}
+
+void Alien::NotifyCollision(GameObject& other) {
+    if(other.GetComponent("Bullet") != nullptr) {
+        Bullet* bullet = dynamic_cast<Bullet*>(other.GetComponent("Bullet").get());
+        if(!bullet->targetsPlayer) {
+            this->hp -= bullet->GetDamage();
+        }
+    }
 }
 
 Alien::Action::Action(ActionType type, float x, float y) {

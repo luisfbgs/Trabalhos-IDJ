@@ -6,6 +6,7 @@
 GameObject::GameObject() {
     this->isDead = false;
     this->started = false;
+    this->angle = 0;
 }
 
 GameObject::~GameObject() {
@@ -61,5 +62,19 @@ void GameObject::Start() {
     this->started = true;
     for(std::shared_ptr<Component> c : this->components) {
         c->Start();
+    }
+}
+
+void GameObject::SetAngle(float angle) {
+    this->angle = angle;
+}
+
+float GameObject::GetAngle() {
+    return this->angle;
+}
+
+void GameObject::NotifyCollision(GameObject &other) {
+    for(std::shared_ptr<Component> c : this->components) {
+        c->NotifyCollision(other);
     }
 }

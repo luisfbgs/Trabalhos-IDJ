@@ -6,10 +6,14 @@
 #include "GameObject.h"
 #include "Game.h"
 #include "Bullet.h"
+#include "Collider.h"
 
 Minion::Minion(GameObject& associated, std::weak_ptr<GameObject> alienCenter, float arcOffsetDeg) : Component(associated) {
     this->alienCenter = alienCenter;
     this->arc = arcOffsetDeg;
+
+    std::shared_ptr<Collider> alienCollider (new Collider(this->associated));
+    this->associated.AddComponent(alienCollider);
 }
 
 void Minion::Update(int dt) {
@@ -20,7 +24,7 @@ void Minion::Update(int dt) {
         arc += kRotationArc * dt;
         Sprite *mySprite = dynamic_cast<Sprite*>(this->associated.GetComponent("Sprite").get());
         mySprite->SetAngle(arc);
-        Vec2 pos = {150, 0};
+        Vec2 pos = {200, 0};
         pos = pos.Rotate(arc);
         pos += this->alienCenter.lock()->box.Center();
         this->associated.box.CenterIn(pos);

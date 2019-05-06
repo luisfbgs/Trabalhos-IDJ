@@ -11,6 +11,8 @@
 #include "Alien.h"
 #include "CameraFollower.h"
 #include "PenguinBody.h"
+#include "Collision.h"
+#include "Rect.h"
 
 State::State() {
     this->quitRequested = false;
@@ -61,7 +63,7 @@ void State::LoadAssets() {
     std::shared_ptr<PenguinBody> penguin(new PenguinBody(*penguinGO));
     penguinGO->AddComponent(penguin);
 
-    penguinGO->box.CenterIn({704, 640});
+    penguinGO->box.lefUp = {704, 640};
     
     this->AddObject(background);
     this->AddObject(gameTile);
@@ -90,6 +92,23 @@ void State::Update(int dt) {
             --i;
         }
     }
+
+    for(int i = 0; i < (int)this->objectArray.size(); i++) {
+        std::shared_ptr<GameObject> object1 = this->objectArray[i];
+        if(object1->GetComponent("Collider") != nullptr) {
+            for(int j = i + 1; j < (int)this->objectArray.size(); j++) {
+                std::shared_ptr<GameObject> object2 = this->objectArray[j];
+                if(object2->GetComponent("Collider") != nullptr) {
+                    Rect rect1 = object1->box;
+                    Rect rect2 = object2->box;
+                    if(Collision::IsColliding(rect1, rect2, object1->GetAngle(), object2->GetAngle())) {
+                        object1->NotifyCollision(*object2);    
+                        object2->NotifyCollision(*object1);    
+                    }
+                }
+            }
+        }
+    }
 }
 
 void State::Render() {
@@ -97,9 +116,12 @@ void State::Render() {
     
     for(std::shared_ptr<GameObject> object : this->objectArray) {
         object->Render();
-        Component *aux = object->GetComponent("TileMap").get();
-        if(aux != nullptr) {
-            tileMap = dynamic_cast<TileMap*>(aux);
+
+        if(tileMap == nullptr) {
+            Component *aux = object->GetComponent("TileMap").get();
+            if(aux != nullptr) {
+                tileMap = dynamic_cast<TileMap*>(aux);
+            }
         }
     }
 

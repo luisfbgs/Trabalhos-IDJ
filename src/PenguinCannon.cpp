@@ -9,16 +9,19 @@
 #include "Camera.h"
 #include "Bullet.h"
 #include "Game.h"
+#include "Collider.h"
 
 PenguinCannon::PenguinCannon(GameObject& associated) : Component(associated) {
     std::shared_ptr<Sprite> cannonSprite(new Sprite(this->associated, std::string("assets/img/cubngun.png")));
     this->associated.AddComponent(cannonSprite);
+
     this->angle = 0;
 }
 
 void PenguinCannon::Render() {}
 
 void PenguinCannon::Update(int dt) {
+    (void)dt;
     if(PenguinBody::player == nullptr) {
         this->associated.RequestDelete();
     }
@@ -40,16 +43,15 @@ void PenguinCannon::Update(int dt) {
 bool PenguinCannon::Is(const std::string& type) {
     return type == "PenguinCannon";
 }
-
+#include <stdio.h>
 void PenguinCannon::Shoot() {
     GameObject *bulletGO = new GameObject();
 
-    std::shared_ptr<Bullet> bullet(new Bullet(*bulletGO, this->angle, 0.6, 1, 600, std::string("assets/img/penguinbullet.png"), 4));
-    bulletGO->box.CenterIn(this->associated.box.Center());
+    std::shared_ptr<Bullet> bullet(new Bullet(*bulletGO, this->angle, 0.6, 1, 600, std::string("assets/img/penguinbullet.png"), 4, false));
     bulletGO->AddComponent(bullet);
-    Vec2 bulletOffset = {60, 0};
+    Vec2 bulletOffset = {66, 0};
     bulletOffset = bulletOffset.Rotate(angle);
-    bulletGO->box.CenterIn(bulletGO->box.Center() + bulletOffset);
-
+    bulletGO->box.CenterIn(this->associated.box.Center() + bulletOffset);
+    
     Game::GetInstance().GetState().AddObject(bulletGO);
 }

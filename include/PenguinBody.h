@@ -16,6 +16,7 @@ public:
     void Render();
     bool Is(const std::string& type);
     static PenguinBody* player;
+    void NotifyCollision(GameObject& other);
 
 private:
     std::weak_ptr<GameObject> pcannon;

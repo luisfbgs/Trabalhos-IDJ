@@ -9,6 +9,9 @@
 #include "Vec2.h"
 #include "Game.h"
 #include "InputManager.h"
+#include "Collider.h"
+#include "Bullet.h"
+#include "Camera.h"
 
 PenguinBody* PenguinBody::player = nullptr;
 
@@ -17,11 +20,18 @@ PenguinBody::PenguinBody(GameObject& associated) : Component(associated) {
 
     std::shared_ptr<Sprite> bodySprite (new Sprite(this->associated, std::string("assets/img/penguin.png"), 1, 100));
     this->associated.AddComponent(bodySprite);
+
+    std::shared_ptr<Collider> bodyCollider (new Collider(this->associated));
+    this->associated.AddComponent(bodyCollider);
+
     this->angle = 0;
+    this->hp = 10;
+    this->linearSpeed = 0;
 }
 
 PenguinBody::~PenguinBody() {
     player = nullptr;
+    Camera::Unfollow();
 }
 
 void PenguinBody::Start() {
@@ -42,10 +52,12 @@ void PenguinBody::Update(int dt) {
         this->linearSpeed = std::max(0.0f, this->linearSpeed - dt / 600.0f);
     }
     if(input.IsKeyDown('a')) {
-        this->angle = angle - dt / 3.0f;
+        this->angle -= dt / 3.0f;
+        this->angle += 360 * (this->angle <= -360);
     }
     if(input.IsKeyDown('d')) {
-        this->angle = angle + dt / 3.0f;
+        this->angle += dt / 3.0f;
+        this->angle -= 360 * (this->angle >= 360);
     }
 
     Sprite *mySprite = dynamic_cast<Sprite*>(this->associated.GetComponent("Sprite").get());
@@ -65,4 +77,13 @@ void PenguinBody::Render() {}
 
 bool PenguinBody::Is(const std::string& type) {
     return type == "PenguinBody";
+}
+
+void PenguinBody::NotifyCollision(GameObject& other) {
+    if(other.GetComponent("Bullet") != nullptr) {
+        Bullet* bullet = dynamic_cast<Bullet*>(other.GetComponent("Bullet").get());
+        if(bullet->targetsPlayer) {
+            this->hp -= bullet->GetDamage();
+        }
+    }
 }

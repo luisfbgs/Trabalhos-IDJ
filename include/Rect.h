@@ -9,6 +9,7 @@ public:
     Rect(Vec2 lefUp, float w = 0, float h = 0);
     Vec2 lefUp; 
     float w, h;
+    float angle;
 
     Rect operator+(const Vec2 &o) const;
     Rect operator-(const Vec2 &o) const;

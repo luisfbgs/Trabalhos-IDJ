@@ -15,6 +15,7 @@ public:
     void Update(int dt);
     void Render();
     bool Is(const std::string &type);
+    void NotifyCollision(GameObject& other);
 
 private:
     class Action {

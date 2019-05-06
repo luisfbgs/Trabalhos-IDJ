@@ -1,9 +1,13 @@
 #include "Rect.h"
 #include "Vec2.h"
 
-Rect::Rect(float x, float y, float w, float h) : lefUp(x, y), w(w), h(h) {}
+Rect::Rect(float x, float y, float w, float h) : lefUp(x, y), w(w), h(h) {
+    this->angle = 0;
+}
 
-Rect::Rect(Vec2 lefUp, float w, float h) : lefUp(lefUp), w(w), h(h) {}
+Rect::Rect(Vec2 lefUp, float w, float h) : lefUp(lefUp), w(w), h(h) {
+    this->angle = 0;
+}
 
 Rect Rect::operator+(const Vec2 &o) const {
     return {this->lefUp + o, w, h};
@@ -19,8 +23,7 @@ Vec2 Rect::Center() const {
 }
 
 void Rect::CenterIn(const Vec2 &pos) {
-    this->lefUp = pos;
-    this->lefUp += pos - this->Center(); 
+    this->lefUp = pos - Vec2(this->w / 2, this->h / 2);
 }
 
 bool Rect::Contains(float x, float y) const {
