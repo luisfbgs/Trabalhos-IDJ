@@ -5,20 +5,18 @@
 #include "Camera.h"
 #include "Vec2.h"
 #include "Resources.h"
+#include "Timer.h"
 #define INCLUDE_SDL_IMAGE
 #include "SDL_include.h"
 
-Sprite::Sprite(GameObject& associated, int frameCount, int frameTime) : Component(associated) {
-    this->texture = nullptr;
+Sprite::Sprite(GameObject& associated, const std::string &file, int frameCount, int frameTime, int msToSelfDestruct) : Component(associated) {
     this->scale = {1, 1};
     this->angle = 0;
     this->frameCount = frameCount;
     this->frameTime = frameTime;
     this->timeElapsed = 0;
     this->currentFrame = 0;
-}
-
-Sprite::Sprite(GameObject& associated, const std::string &file, int frameCount, int frameTime) : Sprite(associated, frameCount, frameTime) {
+    this->msToSelfDestruct = msToSelfDestruct;
     this->Open(file);
 }
 
@@ -60,9 +58,17 @@ void Sprite::Render() {
 
 void Sprite::Update(int dt) {
     this->timeElapsed += dt;
-    if(this->timeElapsed > this->frameTime) {
+    if(this->msToSelfDestruct) {
+        this->selfDestructCount.Update(dt);
+        if(this->selfDestructCount.Get() >= this->msToSelfDestruct) {
+            this->associated.RequestDelete();
+            return;
+        }
+    }
+    if(this->timeElapsed >= this->frameTime) {
         this->currentFrame++;
         this->currentFrame %= this->frameCount;
+        this->timeElapsed -= this->frameTime;
     }
     this->SetClip(this->currentFrame * this->width, 0, this->width, this->height);
 }

@@ -12,6 +12,7 @@
 #include "Collider.h"
 #include "Bullet.h"
 #include "Camera.h"
+#include "Sound.h"
 
 PenguinBody* PenguinBody::player = nullptr;
 
@@ -46,7 +47,7 @@ void PenguinBody::Update(int dt) {
     InputManager& input = InputManager::GetInstance();
 
     if(input.IsKeyDown('w')) {
-        this->linearSpeed = std::min(2.3f, this->linearSpeed + dt / 1000.0f);
+        this->linearSpeed = std::min(1.7f, this->linearSpeed + dt / 1000.0f);
     }
     if(input.IsKeyDown('s')) {
         this->linearSpeed = std::max(0.0f, this->linearSpeed - dt / 600.0f);
@@ -64,11 +65,19 @@ void PenguinBody::Update(int dt) {
     mySprite->SetAngle(this->angle);
     
     this->speed = Vec2(1, 0).Rotate(angle);
-    this->speed *= this->linearSpeed;
+    this->speed *= this->linearSpeed * dt;
     this->associated.box.CenterIn(this->associated.box.Center() + this->speed);
     pcannon.lock()->box.CenterIn(this->associated.box.Center());
 
     if(this->hp <= 0) {
+        GameObject *deathGO = new GameObject();
+        std::shared_ptr<Sprite> deathSprite(new Sprite(*deathGO, std::string("assets/img/penguindeath.png"), 5, 150, 750));
+        std::shared_ptr<Sound> deathSound(new Sound(*deathGO, std::string("assets/audio/boom.wav")));
+        deathGO->AddComponent(deathSprite);
+        deathGO->AddComponent(deathSound);
+        deathSound->Play();
+        deathGO->box.CenterIn(this->associated.box.Center());
+        Game::GetInstance().GetState().AddObject(deathGO);
         this->associated.RequestDelete();
     }
 }

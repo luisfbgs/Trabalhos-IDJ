@@ -12,6 +12,7 @@
 #include "Common.h"
 #include "Collider.h"
 #include "Bullet.h"
+#include "Sound.h"
 
 Alien::Alien(GameObject& associated, int nMinions) : Component(associated) {
     std::shared_ptr<Sprite> alienSprite(new Sprite(this->associated, "assets/img/alien.png"));
@@ -50,10 +51,6 @@ void Alien::Start() {
 }
 
 void Alien::Update(int dt) {
-    if(this->hp <= 0) {
-        this->associated.RequestDelete();
-        return;
-    }
     Sprite *mySprite = dynamic_cast<Sprite*>(this->associated.GetComponent("Sprite").get());
     mySprite->SetAngle(mySprite->GetAngle() - 0.09 * dt);
         
@@ -92,6 +89,17 @@ void Alien::Update(int dt) {
             shooter->Shoot(doIt.pos);
             taskQueue.pop();
         }
+    }
+    if(this->hp <= 0) {
+        GameObject *deathGO = new GameObject();
+        std::shared_ptr<Sprite> deathSprite(new Sprite(*deathGO, std::string("assets/img/aliendeath.png"), 4, 200, 800));
+        std::shared_ptr<Sound> deathSound(new Sound(*deathGO, std::string("assets/audio/boom.wav")));
+        deathGO->AddComponent(deathSprite);
+        deathGO->AddComponent(deathSound);
+        deathSound->Play();
+        deathGO->box.CenterIn(this->associated.box.Center());
+        Game::GetInstance().GetState().AddObject(deathGO);
+        this->associated.RequestDelete();
     }
 }   
 

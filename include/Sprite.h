@@ -5,14 +5,14 @@
 #include "Component.h"
 #include "GameObject.h"
 #include "Vec2.h"
+#include "Timer.h"
 
 #define INCLUDE_SDL
 #include "SDL_include.h"
 
 class Sprite : public Component{
 public:
-    Sprite(GameObject& associated, int frameCount = 1, int frameTime = 1);
-    Sprite(GameObject& associated, const std::string &file, int frameCount = 1, int frameTime = 1);
+    Sprite(GameObject& associated, const std::string &file, int frameCount = 1, int frameTime = 1, int msToSelfDestruct = 0);
     void SetScale(float scaleX, float scaleY); 
     Vec2 GetScale();
     void SetAngle(float angle);
@@ -41,6 +41,8 @@ private:
     int currentFrame;
     int timeElapsed;
     int frameTime;
+    int msToSelfDestruct;
+    Timer selfDestructCount;
 };
 
 #endif

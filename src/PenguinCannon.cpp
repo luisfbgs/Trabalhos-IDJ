@@ -16,12 +16,13 @@ PenguinCannon::PenguinCannon(GameObject& associated) : Component(associated) {
     this->associated.AddComponent(cannonSprite);
 
     this->angle = 0;
+    this->shootCooldown.Update(kShootCooldown);
 }
 
 void PenguinCannon::Render() {}
 
 void PenguinCannon::Update(int dt) {
-    (void)dt;
+    this->shootCooldown.Update(dt);
     if(PenguinBody::player == nullptr) {
         this->associated.RequestDelete();
     }
@@ -34,8 +35,9 @@ void PenguinCannon::Update(int dt) {
         Sprite *mySprite = dynamic_cast<Sprite*>(this->associated.GetComponent("Sprite").get());
         mySprite->SetAngle(this->angle);
     
-        if(input.MousePress(LEFT_MOUSE_BUTTON)) {
+        if(this->shootCooldown.Get() >= kShootCooldown && input.IsMouseDown(LEFT_MOUSE_BUTTON)) {
             this->Shoot();
+            this->shootCooldown.Restart();
         }
     }
 }
@@ -43,11 +45,11 @@ void PenguinCannon::Update(int dt) {
 bool PenguinCannon::Is(const std::string& type) {
     return type == "PenguinCannon";
 }
-#include <stdio.h>
+
 void PenguinCannon::Shoot() {
     GameObject *bulletGO = new GameObject();
 
-    std::shared_ptr<Bullet> bullet(new Bullet(*bulletGO, this->angle, 0.6, 1, 600, std::string("assets/img/penguinbullet.png"), 4, false));
+    std::shared_ptr<Bullet> bullet(new Bullet(*bulletGO, this->angle, 0.6, 1, 480, std::string("assets/img/penguinbullet.png"), 4, false));
     bulletGO->AddComponent(bullet);
     Vec2 bulletOffset = {66, 0};
     bulletOffset = bulletOffset.Rotate(angle);

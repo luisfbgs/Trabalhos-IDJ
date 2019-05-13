@@ -4,7 +4,10 @@
 #include <memory>
 #include <string>
 #include "GameObject.h"
+#include "Timer.h"
 #include "Component.h"
+
+const int kShootCooldown = 200;
 
 class PenguinCannon : public Component {
 public:
@@ -16,6 +19,7 @@ public:
 
 private:
     float angle;
+    Timer shootCooldown;
 };
 
 #endif

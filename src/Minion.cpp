@@ -18,6 +18,12 @@ Minion::Minion(GameObject& associated, std::weak_ptr<GameObject> alienCenter, fl
 
 void Minion::Update(int dt) {
     if(!this->alienCenter.lock()) {
+        GameObject *deathGO = new GameObject();
+        std::shared_ptr<Sprite> deathSprite(new Sprite(*deathGO, std::string("assets/img/aliendeath.png"), 4, 200, 800));
+        deathSprite->SetScale(0.5f, 0.5f);
+        deathGO->AddComponent(deathSprite);
+        deathGO->box.CenterIn(this->associated.box.Center());
+        Game::GetInstance().GetState().AddObject(deathGO);
         this->associated.RequestDelete();
     }
     else {
@@ -41,7 +47,7 @@ void Minion::Shoot(Vec2 target) {
     GameObject *bulletGO = new GameObject();
 
     float angle = (target - this->associated.box.Center()).Angle();
-    std::shared_ptr<Bullet> bullet(new Bullet(*bulletGO, angle, 0.6, 1, 600, std::string("assets/img/minionbullet2.png"), 3));
+    std::shared_ptr<Bullet> bullet(new Bullet(*bulletGO, angle, 0.6, 1, 480, std::string("assets/img/minionbullet2.png"), 3));
     bulletGO->box.CenterIn(this->associated.box.Center());
     bulletGO->AddComponent(bullet);
 

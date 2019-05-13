@@ -7,7 +7,7 @@
 #include "Collider.h"
 
 Bullet::Bullet(GameObject &associated, float angle, float speed, int damage, float maxDistance, std::string sprite, int frames, bool targetsPlayer) : Component(associated) {
-    std::shared_ptr<Sprite> bulletSprite (new Sprite(this->associated, sprite, frames, 150));
+    std::shared_ptr<Sprite> bulletSprite (new Sprite(this->associated, sprite, frames, maxDistance / speed / frames));
     bulletSprite->SetAngle(angle);
     bulletSprite->SetScale(1.5f, 1.5f);
     this->associated.AddComponent(bulletSprite);
