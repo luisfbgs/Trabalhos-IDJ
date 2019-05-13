@@ -47,7 +47,7 @@ void PenguinBody::Update(int dt) {
     InputManager& input = InputManager::GetInstance();
 
     if(input.IsKeyDown('w')) {
-        this->linearSpeed = std::min(1.7f, this->linearSpeed + dt / 1000.0f);
+        this->linearSpeed = std::min(1.0f, this->linearSpeed + dt / 1000.0f);
     }
     if(input.IsKeyDown('s')) {
         this->linearSpeed = std::max(0.0f, this->linearSpeed - dt / 600.0f);

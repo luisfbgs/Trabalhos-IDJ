@@ -13,6 +13,7 @@
 #include "PenguinBody.h"
 #include "Collision.h"
 #include "Rect.h"
+#include "Game.h"
 
 State::State() {
     this->quitRequested = false;
@@ -30,10 +31,7 @@ bool State::QuitRequested() {
 void State::LoadAssets() {
     GameObject* background = new GameObject();
     std::shared_ptr<Sprite> backgroundSprite(new Sprite(*background, std::string("assets/img/ocean.jpg")));
-    background->box.lefUp.x = 0;
-    background->box.lefUp.y = 0;
-    background->box.w = backgroundSprite->GetWidth();
-    background->box.h = backgroundSprite->GetHeight();
+    backgroundSprite->SetScale((float)Game::GetInstance().GetWidth() / backgroundSprite->GetWidth(), (float)Game::GetInstance().GetHeight() / backgroundSprite->GetHeight());
     std::shared_ptr<CameraFollower> cameraFollower(new CameraFollower(*background));
     
     background->AddComponent(backgroundSprite);
