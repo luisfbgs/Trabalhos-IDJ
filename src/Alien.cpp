@@ -13,6 +13,9 @@
 #include "Collider.h"
 #include "Bullet.h"
 #include "Sound.h"
+#include "PenguinBody.h"
+
+int Alien::alienCount = 0;
 
 Alien::Alien(GameObject& associated, int nMinions) : Component(associated) {
     std::shared_ptr<Sprite> alienSprite(new Sprite(this->associated, "assets/img/alien.png"));
@@ -23,10 +26,13 @@ Alien::Alien(GameObject& associated, int nMinions) : Component(associated) {
 
     this->nMinions = nMinions;
     this->hp = 10;
+    alienCount++;
+    this->state = AlienState::RESTING;
 }
 
 Alien::~Alien() {
     this->minionArray.clear();
+    alienCount--;
 }
 
 void Alien::Start() {
@@ -53,43 +59,29 @@ void Alien::Start() {
 void Alien::Update(int dt) {
     Sprite *mySprite = dynamic_cast<Sprite*>(this->associated.GetComponent("Sprite").get());
     mySprite->SetAngle(mySprite->GetAngle() - 0.09 * dt);
-        
-    InputManager &input = InputManager::GetInstance();
-    if(input.MousePress(RIGHT_MOUSE_BUTTON)) {
-        Alien::Action nAction(Action::ActionType::MOVE, input.GetMouseX() + Camera::pos.x, input.GetMouseY() + Camera::pos.y);
-        this->taskQueue.push(nAction);
-    }
-    if(input.MousePress(LEFT_MOUSE_BUTTON)) {
-        Alien::Action nAction(Action::ActionType::SHOOT, input.GetMouseX() + Camera::pos.x, input.GetMouseY() + Camera::pos.y);
-        this->taskQueue.push(nAction);
-    }
-    if(!this->taskQueue.empty()) {
-        Alien::Action doIt = this->taskQueue.front();
-        if(doIt.type == Action::ActionType::MOVE) {
-            if(doIt.pos.Dist(this->associated.box.Center()) < dt) {
-                this->associated.box.CenterIn(doIt.pos);
-                taskQueue.pop();
+    
+    if(PenguinBody::player != nullptr) {
+        if(this->state == AlienState::RESTING) {
+            this->restTimer.Update(dt);
+            if(this->restTimer.Get() >= kAlienCooldown) {
+                this->destination = PenguinBody::player->GetPosition();
+                this->speed = this->destination - this->associated.box.Center();
+                this->speed = this->speed.Norm();
+                this->state = AlienState::MOVING;
+                this->restTimer.Restart();
+            }
+        }
+        else {
+            if(this->destination.Dist(this->associated.box.Center()) <= 400) {
+                this->Shoot(PenguinBody::player->GetPosition());
+                this->state = AlienState::RESTING;
             }
             else {
-                Vec2 move = doIt.pos - this->associated.box.Center();
-                move = move.Norm() * dt;
-                this->associated.box.lefUp += move; 
+                this->associated.box.lefUp += this->speed * dt; 
             }
-        }
-        else if(doIt.type == Action::ActionType::SHOOT) {
-            int id = 0;
-            float minDist = minionArray[0].lock()->box.Center().Dist(doIt.pos);
-            for(int i = 1; i < nMinions; i++) {
-                if(minionArray[i].lock()->box.Center().Dist(doIt.pos) < minDist) {
-                    id = i;
-                    minDist = minionArray[i].lock()->box.Center().Dist(doIt.pos);
-                }
-            }
-            Minion *shooter = dynamic_cast<Minion*>(minionArray[id].lock()->GetComponent("Minion").get());
-            shooter->Shoot(doIt.pos);
-            taskQueue.pop();
         }
     }
+
     if(this->hp <= 0) {
         GameObject *deathGO = new GameObject();
         std::shared_ptr<Sprite> deathSprite(new Sprite(*deathGO, std::string("assets/img/aliendeath.png"), 4, 200, 800));
@@ -118,7 +110,15 @@ void Alien::NotifyCollision(GameObject& other) {
     }
 }
 
-Alien::Action::Action(ActionType type, float x, float y) {
-    this->type = type;
-    this->pos = {x, y};
+void Alien::Shoot(Vec2 target) {
+    int id = 0;
+    float minDist = this->minionArray[0].lock()->box.Center().Dist(target);
+    for(int i = 1; i < this->nMinions; i++) {
+        if(this->minionArray[i].lock()->box.Center().Dist(target) < minDist) {
+            id = i;
+            minDist = this->minionArray[i].lock()->box.Center().Dist(target);
+        }
+    }
+    Minion *shooter = dynamic_cast<Minion*>(this->minionArray[id].lock()->GetComponent("Minion").get());
+    shooter->Shoot(target);
 }

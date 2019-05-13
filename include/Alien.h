@@ -6,6 +6,9 @@
 #include "GameObject.h"
 #include "Component.h"
 #include "Vec2.h"
+#include "Timer.h"
+
+const int kAlienCooldown = 500;
 
 class Alien : public Component {
 public:
@@ -16,22 +19,18 @@ public:
     void Render();
     bool Is(const std::string &type);
     void NotifyCollision(GameObject& other);
+    void Shoot(Vec2 target);
+    static int alienCount;
 
 private:
-    class Action {
-    public:
-        enum class ActionType{
-            MOVE, SHOOT
-        };
-        Action (ActionType type, float x, float y);
-        ActionType type;
-        Vec2 pos;
-    };
     Vec2 speed;
     int hp;
     int nMinions;
-    std::queue<Action> taskQueue;
     std::vector<std::weak_ptr<GameObject>> minionArray;
+    enum AlienState { MOVING, RESTING };
+    AlienState state;
+    Timer restTimer;
+    Vec2 destination;
 };
 
 #endif
