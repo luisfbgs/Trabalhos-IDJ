@@ -6,6 +6,7 @@
 #include "Common.h"
 
 class Collision {
+
 public:
     static inline bool IsColliding(Rect& a, Rect& b, float angleOfA, float angleOfB) {
         Vec2 A[] = {Vec2(a.lefUp.x, a.lefUp.y + a.h),

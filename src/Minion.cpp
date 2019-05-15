@@ -7,6 +7,7 @@
 #include "Game.h"
 #include "Bullet.h"
 #include "Collider.h"
+#include "Sprite.h"
 
 Minion::Minion(GameObject& associated, std::weak_ptr<GameObject> alienCenter, float arcOffsetDeg) : Component(associated) {
     this->alienCenter = alienCenter;
@@ -23,7 +24,7 @@ void Minion::Update(int dt) {
         deathSprite->SetScale(0.5f, 0.5f);
         deathGO->AddComponent(deathSprite);
         deathGO->box.CenterIn(this->associated.box.Center());
-        Game::GetInstance().GetState().AddObject(deathGO);
+        Game::GetInstance().GetCurrentState().AddObject(deathGO);
         this->associated.RequestDelete();
     }
     else {
@@ -51,7 +52,7 @@ void Minion::Shoot(Vec2 target) {
     bulletGO->box.CenterIn(this->associated.box.Center());
     bulletGO->AddComponent(bullet);
 
-    Game::GetInstance().GetState().AddObject(bulletGO);
+    Game::GetInstance().GetCurrentState().AddObject(bulletGO);
 };
 
 void Minion::Start() {

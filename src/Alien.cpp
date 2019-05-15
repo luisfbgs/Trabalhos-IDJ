@@ -37,7 +37,7 @@ Alien::~Alien() {
 
 void Alien::Start() {
     if(this->nMinions) {
-        std::weak_ptr<GameObject> myPtr = Game::GetInstance().GetState().GetObjectPtr(&this->associated);
+        std::weak_ptr<GameObject> myPtr = Game::GetInstance().GetCurrentState().GetObjectPtr(&this->associated);
         float arc = 360.0 / this->nMinions;
         for(int i = 0; i < this->nMinions; i++) {
             GameObject *minionGO = new GameObject();
@@ -50,7 +50,7 @@ void Alien::Start() {
             minionGO->AddComponent(minionSprite);
 
             std::weak_ptr<GameObject> newMinion;
-            newMinion = Game::GetInstance().GetState().AddObject(minionGO);
+            newMinion = Game::GetInstance().GetCurrentState().AddObject(minionGO);
             this->minionArray.push_back(newMinion);
         }
     }
@@ -90,7 +90,7 @@ void Alien::Update(int dt) {
         deathGO->AddComponent(deathSound);
         deathSound->Play();
         deathGO->box.CenterIn(this->associated.box.Center());
-        Game::GetInstance().GetState().AddObject(deathGO);
+        Game::GetInstance().GetCurrentState().AddObject(deathGO);
         this->associated.RequestDelete();
     }
 }   

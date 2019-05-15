@@ -55,5 +55,5 @@ void PenguinCannon::Shoot() {
     bulletOffset = bulletOffset.Rotate(angle);
     bulletGO->box.CenterIn(this->associated.box.Center() + bulletOffset);
     
-    Game::GetInstance().GetState().AddObject(bulletGO);
+    Game::GetInstance().GetCurrentState().AddObject(bulletGO);
 }

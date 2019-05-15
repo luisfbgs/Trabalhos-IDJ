@@ -2,6 +2,8 @@
 #define GAME
 
 #include <string>
+#include <memory>
+#include <stack>
 
 #define INCLUDE_SDL
 #include "SDL_include.h"
@@ -17,7 +19,8 @@ public:
 	int GetWidth();
 	int GetHeight();
 	SDL_Renderer* GetRenderer();
-	State& GetState();
+	State& GetCurrentState();
+	void Push (State* state);
 
 private:
 	Game(const std::string &title, int width, int height);
@@ -29,7 +32,8 @@ private:
 	int height;
 	SDL_Window* window;
 	SDL_Renderer* renderer;
-	State* state;
+	State* storedState;
+	std::stack<std::unique_ptr<State>> stateStack;
 };
 
 #endif

@@ -40,7 +40,7 @@ void PenguinBody::Start() {
     std::shared_ptr<PenguinCannon> cannon(new PenguinCannon(*cannonGO));
     cannonGO->AddComponent(cannon);
 
-    pcannon = Game::GetInstance().GetState().AddObject(cannonGO);
+    pcannon = Game::GetInstance().GetCurrentState().AddObject(cannonGO);
 }
 
 void PenguinBody::Update(int dt) {
@@ -77,7 +77,7 @@ void PenguinBody::Update(int dt) {
         deathGO->AddComponent(deathSound);
         deathSound->Play();
         deathGO->box.CenterIn(this->associated.box.Center());
-        Game::GetInstance().GetState().AddObject(deathGO);
+        Game::GetInstance().GetCurrentState().AddObject(deathGO);
         this->associated.RequestDelete();
     }
 }
