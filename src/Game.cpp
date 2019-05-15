@@ -1,10 +1,10 @@
-#define INCLUDE_SDL_IMAGE
-#define INCLUDE_SDL_MIXER
-
 #include <assert.h>
 #include <string>
 
 #define INCLUDE_SDL
+#define INCLUDE_SDL_IMAGE
+#define INCLUDE_SDL_MIXER
+#define INCLUDE_SDL_TTF
 #include "SDL_include.h"
 #include "InputManager.h"
 #include "Game.h"
@@ -23,6 +23,8 @@ Game::Game(const std::string &title, int width, int height) {
     Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 1024);
     Mix_AllocateChannels(32);
 
+    TTF_Init();
+
     instance = this;
 
     this->window = SDL_CreateWindow(title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, 0);
@@ -38,6 +40,8 @@ Game::~Game() {
     if(this->storedState != nullptr) {
         delete this->storedState;
     }
+
+    TTF_Quit();
     SDL_DestroyRenderer(Game::renderer);
     SDL_DestroyWindow(Game::window);
 

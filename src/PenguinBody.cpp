@@ -67,6 +67,10 @@ void PenguinBody::Update(int dt) {
     this->speed = Vec2(1, 0).Rotate(angle);
     this->speed *= this->linearSpeed * dt;
     this->associated.box.CenterIn(this->associated.box.Center() + this->speed);
+    this->associated.box.lefUp.x = std::max(this->associated.box.lefUp.x, 0.0f);
+    this->associated.box.lefUp.x = std::min(this->associated.box.lefUp.x, 1408.f - this->associated.box.w);
+    this->associated.box.lefUp.y = std::max(this->associated.box.lefUp.y, 0.0f);
+    this->associated.box.lefUp.y = std::min(this->associated.box.lefUp.y, 1280.f - this->associated.box.h);
     pcannon.lock()->box.CenterIn(this->associated.box.Center());
 
     if(this->hp <= 0) {
