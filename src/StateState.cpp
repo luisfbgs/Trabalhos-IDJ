@@ -13,8 +13,12 @@
 #include "PenguinBody.h"
 #include "Collision.h"
 #include "Rect.h"
+#include "Resources.h"
 #include "Game.h"
 #include "State.h"
+#include "GameData.h"
+#include "EndState.h"
+#include "Common.h"
 
 void StageState::LoadAssets() {
     GameObject* background = new GameObject();
@@ -24,6 +28,7 @@ void StageState::LoadAssets() {
     
     background->AddComponent(backgroundSprite);
     background->AddComponent(cameraFollower);
+    this->AddObject(background);
 
     GameObject* gameTile = new GameObject();   
     std::shared_ptr<Sprite> tileSprite(new Sprite(*gameTile, std::string("assets/img/tileset.png")));
@@ -36,24 +41,24 @@ void StageState::LoadAssets() {
     std::shared_ptr<TileMap> tileMap(new TileMap(*gameTile, std::string("assets/map/tileMap.txt"), tileSet));
 
     gameTile->AddComponent(tileMap);
+    this->AddObject(gameTile);
 
-    GameObject* alienGO = new GameObject();
+    for(int i = 0; i < 4; i++) {
+        GameObject* alienGO = new GameObject();
 
-    std::shared_ptr<Alien> alien(new Alien(*alienGO, 10));
-    alienGO->AddComponent(alien);
+        std::shared_ptr<Alien> alien(new Alien(*alienGO, 6));
+        alienGO->AddComponent(alien);
 
-    alienGO->box.CenterIn({512, 300});
-    
+        alienGO->box.CenterIn({randReal(0, 1480), randReal(0, 1280)});
+        this->AddObject(alienGO);
+    }
+
     GameObject* penguinGO = new GameObject();
 
     std::shared_ptr<PenguinBody> penguin(new PenguinBody(*penguinGO));
     penguinGO->AddComponent(penguin);
 
     penguinGO->box.lefUp = {704, 640};
-    
-    this->AddObject(background);
-    this->AddObject(gameTile);
-    this->AddObject(alienGO);
     this->AddObject(penguinGO);
 
     Camera::Follow(penguinGO);
@@ -65,7 +70,8 @@ void StageState::LoadAssets() {
 void StageState::Update(int dt) {
     Camera::Update(dt);
     InputManager &input = InputManager::GetInstance();
-    this->quitRequested = input.KeyPress(ESCAPE_KEY) || input.QuitRequested();
+    this->quitRequested = input.KeyPress(ESCAPE_KEY);
+    GameData::quitAll = input.QuitRequested();
 
     this->UpdateArray(dt);
 
@@ -84,6 +90,15 @@ void StageState::Update(int dt) {
                 }
             }
         }
+    }
+
+    if(Alien::alienCount == 0) {
+        GameData::playerVictory = true;
+        Game::GetInstance().Push(new EndState());
+    }
+    if(PenguinBody::player == nullptr) {
+        GameData::playerVictory = false;
+        Game::GetInstance().Push(new EndState());
     }
 }
 
@@ -128,10 +143,18 @@ std::weak_ptr<GameObject> StageState::GetObjectPtr(GameObject* go) {
 }
 
 void StageState::Start() {
+    GameData::playerVictory = false;
     this->LoadAssets();
     this->StartArray();
 }
 
-void StageState::Pause() {}
+void StageState::Pause() {
+}
 
-void StageState::Resume() {}
+void StageState::Resume() {
+    this->objectArray.clear();
+    this->started = false;
+    GameData::playerVictory = false;
+    this->LoadAssets();
+    this->StartArray();
+}

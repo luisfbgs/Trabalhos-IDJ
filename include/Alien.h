@@ -8,7 +8,7 @@
 #include "Vec2.h"
 #include "Timer.h"
 
-const int kAlienCooldown = 1500;
+const int kAlienCooldown = 2500;
 
 class Alien : public Component {
 public:

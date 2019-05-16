@@ -11,6 +11,7 @@
 #include "State.h"
 #include "Camera.h"
 #include "Resources.h"
+#include "GameData.h"
 
 Game* Game::instance = nullptr;
 
@@ -92,7 +93,12 @@ void Game::Run() {
             this->stateStack.top()->Render();
             SDL_RenderPresent(this->renderer);
         }
-    }while(!this->stateStack.empty());
+    } while(!this->stateStack.empty() && !GameData::quitAll);
+    
+    while(!this->stateStack.empty()) {
+        this->stateStack.pop();
+    }
+    Resources::Free();
 }
 
 void Game::CalculateDeltaTime() {

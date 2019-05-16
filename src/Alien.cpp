@@ -14,6 +14,7 @@
 #include "Bullet.h"
 #include "Sound.h"
 #include "PenguinBody.h"
+#include "Common.h"
 
 int Alien::alienCount = 0;
 
@@ -28,6 +29,7 @@ Alien::Alien(GameObject& associated, int nMinions) : Component(associated) {
     this->hp = 10;
     alienCount++;
     this->state = AlienState::RESTING;
+    this->restTimer.Update(randInt(0, kAlienCooldown));
 }
 
 Alien::~Alien() {

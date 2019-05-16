@@ -30,7 +30,7 @@ void Music::Stop(int msToStop) {
 
 void Music::Open(std::string file) {
     if(this->IsOpen()) {
-        this->Stop(0);
+        this->Stop();
     }
     this->music = Resources::GetMusic(file.c_str());
 }

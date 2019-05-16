@@ -6,7 +6,7 @@
 #include "Vec2.h"
 #include "Camera.h"
 #include "Game.h"
-#define DEBUG
+//#define DEBUG
 
 Collider::Collider(GameObject& associated, Vec2 scale, Vec2 offset) : Component(associated) {
     this->scale = scale;

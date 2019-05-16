@@ -8,7 +8,7 @@
 #include "Music.h"
 #include "TileSet.h"
 
-class StageState : public State{
+class StageState : public State {
 public:
     void LoadAssets();
     void Update(int dt);

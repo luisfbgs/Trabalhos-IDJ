@@ -1,11 +1,13 @@
-#ifndef TITLESTATE
-#define TITLESTATE
+#ifndef ENDSTATE
+#define ENDSTATE
 
 #include "State.h"
-#include "Timer.h"
+#include "Music.h"
 
-class TitleState : public State {
+class EndState : public State {
 public:
+    EndState();
+    ~EndState();
     void LoadAssets();
     void Update(int dt);
     void Render();
@@ -14,7 +16,7 @@ public:
     void Resume();
 
 private:
-    Timer textDelay;
+    Music backgroundMusic;
 };
 
 #endif
