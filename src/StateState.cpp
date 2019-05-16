@@ -58,7 +58,7 @@ void StageState::LoadAssets() {
 
     Camera::Follow(penguinGO);
 
-    music.Open(std::string("assets/audio/stageStageState.ogg"));
+    music.Open(std::string("assets/audio/stageState.ogg"));
     music.Play();
 }
 

@@ -10,6 +10,7 @@
 #include "Game.h"
 #include "State.h"
 #include "Camera.h"
+#include "Resources.h"
 
 Game* Game::instance = nullptr;
 
@@ -79,6 +80,7 @@ void Game::Run() {
         }
         if(this->stateStack.top()->QuitRequested()) {
             this->stateStack.pop();
+            Resources::Free();
             if(!this->stateStack.empty()) {
                 this->stateStack.top()->Resume();
             }

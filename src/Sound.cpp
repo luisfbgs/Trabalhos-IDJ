@@ -14,7 +14,7 @@ Sound::Sound(GameObject& associated, std::string file) : Sound(associated) {
 
 void Sound::Play(int times) {
     if(this->chunk != nullptr && this->channel == -1) {
-        this->channel = Mix_PlayChannel(-1, this->chunk, times - 1);
+        this->channel = Mix_PlayChannel(-1, this->chunk.get(), times - 1);
     }
 }
 

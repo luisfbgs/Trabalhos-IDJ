@@ -8,6 +8,7 @@
 #include "StageState.h"
 #include "CameraFollower.h"
 #include "Camera.h"
+#include "Text.h"
 
 void TitleState::Update(int dt) {
     (void)dt;
@@ -26,6 +27,14 @@ void TitleState::LoadAssets() {
     titleGO->AddComponent(titleSprite);
     titleGO->AddComponent(cameraFollower);
     this->AddObject(titleGO);
+
+    GameObject *pressSpaceGO = new GameObject();
+    SDL_Color color = {0, 0, 0, 0};
+    std::shared_ptr<Text> pressSpaceText(new Text(*pressSpaceGO, std::string("assets/font/Call me maybe.ttf"), 140, Text::TextStyle::SOLID, std::string("Pressione Espaco"), color));
+    pressSpaceGO->AddComponent(pressSpaceText);
+    pressSpaceGO->box.CenterIn({Game::GetInstance().GetWidth() / 2.0f, 3.0f * Game::GetInstance().GetHeight() / 4});
+
+    this->AddObject(pressSpaceGO);
 }
 
 void TitleState::Render() {

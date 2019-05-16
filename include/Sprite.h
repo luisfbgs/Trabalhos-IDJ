@@ -2,6 +2,7 @@
 #define SPRITE
 
 #include <string>
+#include <memory>
 #include "Component.h"
 #include "GameObject.h"
 #include "Vec2.h"
@@ -31,7 +32,7 @@ public:
     void SetFrameTime(int frameTime);
 
 private:
-    SDL_Texture* texture;  
+    std::shared_ptr<SDL_Texture> texture;  
     int width;
     int height;
     SDL_Rect clipRect;

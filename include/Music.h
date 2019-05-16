@@ -2,6 +2,7 @@
 #define MUSIC
 
 #include<string>
+#include<memory>
 
 #define INCLUDE_SDL_MIXER
 #include<SDL_include.h>
@@ -17,7 +18,7 @@ public:
     bool IsOpen ();
 
 private:
-    Mix_Music* music;
+    std::shared_ptr<Mix_Music> music;
 };
 
 #endif

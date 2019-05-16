@@ -3,6 +3,7 @@
 #include "Component.h"
 #include "GameObject.h"
 #include "Game.h"
+#include "Resources.h"
 
 #define INCLUDE_SDL
 #define INCLUDE_SDL_TTF
@@ -15,8 +16,8 @@ Text::Text(GameObject& associated, std::string fontFile, int fontSize, TextStyle
     this->style = style;
     this->text = text;
     this->color = color;
+    this->font = Resources::GetFont(this->fontFile, fontSize);
     this->RemakeTexture();
-    this->font = nullptr;
 }
 
 Text::~Text() {
@@ -72,5 +73,22 @@ void Text::SetFontSize(int fontSize) {
 }
 
 void Text::RemakeTexture() {
-
+    SDL_Surface* textSurface;
+    switch(this->style) {
+        case SHADED:
+            textSurface = TTF_RenderText_Shaded(this->font.get(), this->text.c_str(), this->color, this->color);
+            break;
+        case BLENDED:
+            textSurface = TTF_RenderText_Blended(this->font.get(), this->text.c_str(), this->color);
+            break;
+        default:
+            textSurface = TTF_RenderText_Solid(this->font.get(), this->text.c_str(), this->color);
+            break;
+    }
+    this->texture = SDL_CreateTextureFromSurface(Game::GetInstance().GetRenderer(), textSurface);
+    int auxw, auxh;
+    SDL_QueryTexture(this->texture, nullptr, nullptr, &auxw, &auxh);
+    this->associated.box.w = auxw;
+    this->associated.box.h = auxh;
+    SDL_FreeSurface(textSurface);
 }

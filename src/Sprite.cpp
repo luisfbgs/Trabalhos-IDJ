@@ -22,7 +22,7 @@ Sprite::Sprite(GameObject& associated, const std::string &file, int frameCount, 
 
 void Sprite::Open(const std::string &file) {
     this->texture = Resources::GetImage(file.c_str());
-    SDL_QueryTexture(this->texture, nullptr, nullptr, &this->width, &this->height);
+    SDL_QueryTexture(this->texture.get(), nullptr, nullptr, &this->width, &this->height);
     this->width /= this->frameCount;
     this->SetClip(0, 0, this->width, this->height);
     this->associated.box = {this->associated.box.lefUp, (float)this->width, (float)this->height};
@@ -48,7 +48,7 @@ void Sprite::Render(float x, float y) {
         dstrect.y = y;
         dstrect.w = this->clipRect.w * this->scale.x;
         dstrect.h = this->clipRect.h * this->scale.y;
-        SDL_RenderCopyEx(Game::GetInstance().GetRenderer(), this->texture, &this->clipRect, &dstrect, this->angle, nullptr, SDL_FLIP_NONE);
+        SDL_RenderCopyEx(Game::GetInstance().GetRenderer(), this->texture.get(), &this->clipRect, &dstrect, this->angle, nullptr, SDL_FLIP_NONE);
     }
 }
 

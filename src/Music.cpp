@@ -20,7 +20,7 @@ Music::~Music() {
 
 void Music::Play(int times) {
     if(this->IsOpen()) {
-        Mix_PlayMusic(music, times);
+        Mix_PlayMusic(this->music.get(), times);
     }
 }
 
@@ -31,7 +31,6 @@ void Music::Stop(int msToStop) {
 void Music::Open(std::string file) {
     if(this->IsOpen()) {
         this->Stop(0);
-        Mix_FreeMusic(music);
     }
     this->music = Resources::GetMusic(file.c_str());
 }

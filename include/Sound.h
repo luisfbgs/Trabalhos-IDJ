@@ -2,6 +2,7 @@
 #define SOUND
 
 #include <string>
+#include <memory>
 #include "Component.h"
 #include "GameObject.h"
 
@@ -20,7 +21,7 @@ public:
     void Render();
     bool Is(const std::string &type);
 private:
-    Mix_Chunk* chunk; 
+    std::shared_ptr<Mix_Chunk> chunk; 
     int channel;
 };
 
