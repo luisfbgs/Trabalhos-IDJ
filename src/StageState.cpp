@@ -149,6 +149,7 @@ void StageState::Start() {
 }
 
 void StageState::Pause() {
+    this->music.Stop(0);
 }
 
 void StageState::Resume() {

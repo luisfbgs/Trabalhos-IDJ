@@ -42,8 +42,6 @@ EndState::EndState() {
     pressSpaceGO->box.CenterIn({Game::GetInstance().GetWidth() / 1.92f, 6.3f * Game::GetInstance().GetHeight() / 7});
 
     this->AddObject(pressSpaceGO);
-
-    backgroundMusic.Play();
 }
 
 
@@ -63,7 +61,9 @@ void EndState::Render() {
     this->RenderArray();
 }
 
-void EndState::Start() {}
+void EndState::Start() {
+    this->backgroundMusic.Play();
+}
 
 void EndState::Pause() {}
 
